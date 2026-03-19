@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "log": "git log --since='midnight'",
     "dev": "vp dev",
     "build": "tsc && vp build",
     "preview": "vp preview",
+    "clean": "rm -rf .output && echo 'Cleaned build.'",
     "prepare": "vp config"
   },
   "dependencies": {
