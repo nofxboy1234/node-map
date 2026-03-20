@@ -1,3 +1,7 @@
+## Additional Agent Instructions
+
+In addition to this file, also apply the instructions in `/home/dylan/.codex/AGENTS.md`.
+
 <!--VITE PLUS START-->
 
 # Using Vite+, the Unified Toolchain for the Web
