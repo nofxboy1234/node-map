@@ -676,8 +676,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  h3@2.0.1-rc.17:
-    resolution: {integrity: sha512-9rPJs68qMj7HJH78z7uSIAw6rl3EElLdVSirTeAf6B5ogwiFVIr9AKMMS4u00Gp8DYIPnnjtw3ZWN7EkYcPBrQ==}
+  h3@2.0.1-rc.18:
+    resolution: {integrity: sha512-2EdYEOIJwZHfhfdxvqZsmmUz4tgwzQSuzre+l50j+voHJV4m7j3zw2lYLgHoyfkCF9EAZcaH4ea0zH/hgcs9Yg==}
     engines: {node: '>=20.11.1'}
     hasBin: true
     peerDependencies:
@@ -1379,7 +1379,7 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  h3@2.0.1-rc.17(crossws@0.4.4(srvx@0.11.12)):
+  h3@2.0.1-rc.18(crossws@0.4.4(srvx@0.11.12)):
     dependencies:
       rou3: 0.8.1
       srvx: 0.11.12
@@ -1453,7 +1453,7 @@ snapshots:
       crossws: 0.4.4(srvx@0.11.12)
       db0: 0.3.4
       env-runner: 0.1.6
-      h3: 2.0.1-rc.17(crossws@0.4.4(srvx@0.11.12))
+      h3: 2.0.1-rc.18(crossws@0.4.4(srvx@0.11.12))
       hookable: 6.1.0
       nf3: 0.3.13
       ocache: 0.1.4
