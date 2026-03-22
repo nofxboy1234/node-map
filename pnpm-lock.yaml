@@ -35,7 +35,7 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vite:
-        specifier: npm:@voidzero-dev/vite-plus-core@latest
+        specifier: npm:@voidzero-dev/vite-plus-core@^0.1.13
         version: '@voidzero-dev/vite-plus-core@0.1.13(typescript@5.9.3)'
       vite-plus:
         specifier: latest
@@ -1024,8 +1024,8 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
-  ws@8.19.0:
-    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
+  ws@8.20.0:
+    resolution: {integrity: sha512-sAt8BhgNbzCtgGbt2OxmpuryO63ZoDk/sqaB/znQm94T4fCEsy/yV+7CdC1kJhOU9lboAEU7R3kquuycDoibVA==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -1314,7 +1314,7 @@ snapshots:
       tinyexec: 1.0.4
       tinyglobby: 0.2.15
       vite: '@voidzero-dev/vite-plus-core@0.1.13(typescript@5.9.3)'
-      ws: 8.19.0
+      ws: 8.20.0
     transitivePeerDependencies:
       - '@arethetypeswrong/core'
       - '@tsdown/css'
@@ -1708,4 +1708,4 @@ snapshots:
     dependencies:
       isexe: 2.0.0
 
-  ws@8.19.0: {}
+  ws@8.20.0: {}
