@@ -78,3 +78,32 @@ These commands map to their corresponding tools. For example, `vp dev --port 300
 - [ ] Run `vp install` after pulling remote changes and before getting started.
 - [ ] Run `vp check` and `vp test` to validate changes.
 <!--VITE PLUS END-->
+
+## Project Architecture
+
+- frontend and backend stay separate for now
+- frontend is a static Vite React SPA
+- frontend uses TanStack Router and TanStack Query
+- TanStack Query owns freshness
+- TanStack Router is mainly for routing and loader prefetch
+- backend is standalone Nitro + Hono
+- frontend talks to backend through Hono RPC wrapped in a typed api-client package
+- use Drizzle as DB source of truth
+- use drizzle-orm/valibot, not drizzle-valibot
+- use Better Auth for auth
+- use Neon Postgres
+- deploy later to Render
+- keep the code arranged in a way that makes future adaptation to Void easier
+- keep Hono, TanStack Router, and TanStack Query usage thin so they can be replaced later if needed
+
+Implementation order:
+
+1. workspace foundation
+2. packages/db
+3. packages/shared
+4. apps/api
+5. packages/api-client
+6. apps/web
+7. first end-to-end resource slice
+8. auth
+9. deploy setup
