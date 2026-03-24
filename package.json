@@ -6,10 +6,10 @@
   "scripts": {
     "clean": "rm -rf apps/api/.output apps/web/dist",
     "dev:local": "./scripts/dev-local.sh",
-    "dev:api": "vp run dev --filter @node-map/api",
-    "dev:web": "vp run dev --filter @node-map/web",
-    "build:api": "vp run build --filter @node-map/api",
-    "build:web": "vp run build --filter @node-map/web"
+    "dev:api": "vp run @node-map/api#dev",
+    "dev:web": "vp run @node-map/web#dev",
+    "build:api": "vp run @node-map/api#build",
+    "build:web": "vp run @node-map/web#build"
   },
   "devDependencies": {
     "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.13",
