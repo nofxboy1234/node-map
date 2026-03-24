@@ -8,5 +8,7 @@ export default defineConfig({
     ignorePatterns: ["apps/web/src/routeTree.gen.ts", "src/**", "server/**"],
     options: { typeAware: true, typeCheck: true },
   },
-  fmt: {},
+  fmt: {
+    ignorePatterns: ["apps/web/src/routeTree.gen.ts", "src/**", "server/**"],
+  },
 });
