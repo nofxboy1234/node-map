@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "clean": "rm -rf apps/api/.output apps/web/dist",
     "dev:local": "./scripts/dev-local.sh",
     "dev:api": "vp run dev --filter @node-map/api",
     "dev:web": "vp run dev --filter @node-map/web",
