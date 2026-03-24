@@ -1,9 +1,17 @@
+import type { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "../routeTree.gen";
 
-export function makeRouter() {
+type RouterContext = {
+  queryClient: QueryClient;
+};
+
+export function makeRouter(queryClient: QueryClient) {
   return createRouter({
     routeTree,
+    context: {
+      queryClient,
+    } satisfies RouterContext,
   });
 }
 
