@@ -9,8 +9,5 @@
     "@node-map/api": "workspace:*",
     "@node-map/shared": "workspace:*",
     "hono": "^4.12.9"
-  },
-  "devDependencies": {
-    "typescript": "^5.9.3"
   }
 }

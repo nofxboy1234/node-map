@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vp dev",
-    "build": "tsc && vp build",
+    "build": "vp build",
     "preview": "vp preview"
   },
   "dependencies": {
@@ -20,7 +20,6 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "typescript": "^5.9.3",
     "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.13",
     "vite-plus": "^0.1.13"
   }
