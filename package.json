@@ -14,7 +14,7 @@
     "build:web": "vp run @node-map/web#build"
   },
   "devDependencies": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.13",
+    "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.14",
     "vite-plus": "latest"
   },
   "packageManager": "pnpm@10.32.1",
