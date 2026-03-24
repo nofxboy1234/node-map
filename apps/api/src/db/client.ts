@@ -1,6 +1,10 @@
 import { notes } from "@node-map/db";
+import { config } from "dotenv";
 import { drizzle } from "drizzle-orm/postgres-js";
+import { resolve } from "node:path";
 import postgres from "postgres";
+
+config({ path: resolve(process.cwd(), "../../.env.local"), quiet: true });
 
 type Schema = {
   notes: typeof notes;
