@@ -1,0 +1,16 @@
+{
+  "name": "@node-map/shared",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@node-map/db": "workspace:*",
+    "drizzle-orm": "1.0.0-beta.18-7eb39f0",
+    "valibot": "^1.3.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
