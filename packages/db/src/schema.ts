@@ -5,3 +5,7 @@ export const notes = pgTable("notes", {
   title: text("title").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+export const schema = {
+  notes,
+};

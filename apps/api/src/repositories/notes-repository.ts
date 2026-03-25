@@ -5,17 +5,11 @@ import { getDb } from "../db/client";
 type NoteRow = typeof notes.$inferSelect;
 
 export function listNotes(): Promise<NoteRow[]> {
-  return getDb()
-    .select()
-    .from(notes as never)
-    .orderBy(desc(notes.createdAt as never)) as Promise<NoteRow[]>;
+  return getDb().select().from(notes).orderBy(desc(notes.createdAt));
 }
 
 export async function createNote(title: string): Promise<NoteRow> {
-  const rows = (await getDb()
-    .insert(notes as never)
-    .values({ title } as never)
-    .returning()) as NoteRow[];
+  const rows = await getDb().insert(notes).values({ title }).returning();
 
   return rows[0]!;
 }

@@ -1,14 +1,10 @@
-import { notes } from "@node-map/db";
+import { schema } from "@node-map/db";
 import { config } from "dotenv";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { resolve } from "node:path";
 import postgres from "postgres";
 
 config({ path: resolve(process.cwd(), "../../.env.local"), quiet: true });
-
-type Schema = {
-  notes: typeof notes;
-};
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
@@ -29,9 +25,9 @@ const client = parsedDatabaseUrl.hostname
       user: parsedDatabaseUrl.username || process.env.USER,
     });
 
-const db = drizzle<Schema>({
+const db = drizzle({
   client,
-  schema: { notes },
+  schema,
 });
 
 export function getDb() {
