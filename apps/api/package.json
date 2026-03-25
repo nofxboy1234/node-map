@@ -2,12 +2,16 @@
   "name": "@node-map/api",
   "private": true,
   "type": "module",
+  "exports": {
+    "./client": "./src/client.ts"
+  },
   "scripts": {
     "dev": "nitro dev",
     "build": "nitro build",
     "preview": "node .output/server/index.mjs"
   },
   "dependencies": {
+    "@hono/standard-validator": "^0.2.2",
     "@neondatabase/serverless": "^1.0.2",
     "@node-map/db": "workspace:*",
     "@node-map/shared": "workspace:*",

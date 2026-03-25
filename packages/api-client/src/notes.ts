@@ -1,37 +1,15 @@
-import { hc } from "hono/client";
-import type { NoteDto } from "@node-map/shared";
+import type { InferRequestType, InferResponseType } from "hono/client";
+import { createApiClient } from "./client";
 
-type GetNotesResponse = {
-  notes: NoteDto[];
-};
-
-type CreateNoteResponse = {
-  note: NoteDto;
-};
-
-type CreateNoteInput = {
-  title: string;
-};
-
-type NotesClient = {
-  api: {
-    notes: {
-      $get: () => Promise<Response>;
-      $post: (args: { json: CreateNoteInput }) => Promise<Response>;
-    };
-  };
-};
-
-function createNotesClient(baseUrl: string): NotesClient {
-  return hc(baseUrl, {
-    init: {
-      credentials: "include",
-    },
-  }) as unknown as NotesClient;
-}
+type NotesClient = ReturnType<typeof createApiClient>;
+type GetNotesRoute = NotesClient["api"]["notes"]["$get"];
+type CreateNoteRoute = NotesClient["api"]["notes"]["$post"];
+type GetNotesResponse = InferResponseType<GetNotesRoute, 200>;
+type CreateNoteInput = InferRequestType<CreateNoteRoute>["json"];
+type CreateNoteResponse = InferResponseType<CreateNoteRoute, 201>;
 
 export async function getNotes(baseUrl: string): Promise<GetNotesResponse> {
-  const client = createNotesClient(baseUrl);
+  const client = createApiClient(baseUrl);
   const res = await client.api.notes.$get();
 
   if (!res.ok) {
@@ -45,7 +23,7 @@ export async function createNote(
   baseUrl: string,
   input: CreateNoteInput,
 ): Promise<CreateNoteResponse> {
-  const client = createNotesClient(baseUrl);
+  const client = createApiClient(baseUrl);
   const res = await client.api.notes.$post({ json: input });
 
   if (!res.ok) {

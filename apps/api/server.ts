@@ -19,7 +19,7 @@ app.use(
 );
 
 app.get("/health", (c) => c.json({ ok: true }));
-app.route("/api/notes", notesRoutes);
+const routes = app.route("/api/notes", notesRoutes);
 
-export type AppType = typeof app;
+export type AppType = typeof routes;
 export default app;
