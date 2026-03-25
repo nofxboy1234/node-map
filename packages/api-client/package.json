@@ -6,7 +6,6 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@node-map/api": "workspace:*",
     "@node-map/shared": "workspace:*",
     "hono": "^4.12.9"
   }
