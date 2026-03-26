@@ -11,19 +11,7 @@ if (!databaseUrl) {
   throw new Error("Missing DATABASE_URL");
 }
 
-const parsedDatabaseUrl = new URL(databaseUrl);
-const databaseName = parsedDatabaseUrl.pathname.slice(1);
-if (!databaseName) {
-  throw new Error("Missing database name");
-}
-
-const client = parsedDatabaseUrl.hostname
-  ? postgres(databaseUrl)
-  : postgres({
-      host: "/run/postgresql",
-      database: databaseName,
-      user: parsedDatabaseUrl.username || process.env.USER,
-    });
+const client = postgres(databaseUrl);
 
 const db = drizzle({
   client,
