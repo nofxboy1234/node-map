@@ -15,6 +15,7 @@
     "@neondatabase/serverless": "^1.0.2",
     "@node-map/db": "workspace:*",
     "@node-map/shared": "workspace:*",
+    "better-auth": "^1.5.6",
     "dotenv": "^17.3.1",
     "drizzle-orm": "1.0.0-beta.19",
     "hono": "^4.12.9",

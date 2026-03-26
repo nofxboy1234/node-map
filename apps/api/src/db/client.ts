@@ -1,4 +1,4 @@
-import { schema } from "@node-map/db";
+import * as schema from "@node-map/db";
 import { config } from "dotenv";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { resolve } from "node:path";

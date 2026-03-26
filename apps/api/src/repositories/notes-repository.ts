@@ -4,7 +4,7 @@ import { getDb } from "../db/client";
 
 type NoteRow = typeof notes.$inferSelect;
 
-export function listNotes(): Promise<NoteRow[]> {
+export function listNotes() {
   return getDb().select().from(notes).orderBy(desc(notes.createdAt));
 }
 

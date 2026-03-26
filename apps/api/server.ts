@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { auth } from "./src/auth/auth";
 import { notesRoutes } from "./src/routes/notes";
 
 const app = new Hono();
@@ -17,6 +18,8 @@ app.use(
     credentials: true,
   }),
 );
+
+app.on(["GET", "POST"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.get("/health", (c) => c.json({ ok: true }));
 const routes = app.route("/api/notes", notesRoutes);
