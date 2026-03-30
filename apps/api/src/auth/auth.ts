@@ -16,6 +16,7 @@ if (!baseUrl) {
 export const auth = betterAuth({
   secret,
   baseURL: baseUrl,
+  trustedOrigins: ["http://localhost:5173"],
   database: drizzleAdapter(getDb(), {
     provider: "pg",
     schema,

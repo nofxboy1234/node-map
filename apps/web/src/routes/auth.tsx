@@ -1,15 +1,24 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import React, { useState } from "react";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import type { SyntheticEvent } from "react";
 import { authClient } from "../lib/auth-client";
 import { sessionQuery } from "../queries/session";
 
 export const Route = createFileRoute("/auth")({
+  loader: async ({ context }) => {
+    const session = await context.queryClient.ensureQueryData(sessionQuery);
+
+    if (session?.user) {
+      throw redirect({ to: "/" });
+    }
+  },
   component: AuthPage,
 });
 
 function AuthPage() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
   const [name, setName] = useState("");
@@ -17,7 +26,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: SyntheticEvent<HTMLFormElement, SubmitEvent>) {
     event.preventDefault();
     setErrorMessage("");
 
@@ -39,6 +48,7 @@ function AuthPage() {
     }
 
     await queryClient.invalidateQueries({ queryKey: sessionQuery.queryKey });
+    await navigate({ to: "/" });
   }
 
   return (

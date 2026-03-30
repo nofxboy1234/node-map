@@ -1,17 +1,27 @@
 import { createNote } from "@node-map/api-client";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { notesQuery } from "../queries/notes";
+import { sessionQuery } from "../queries/session";
 
 export const Route = createFileRoute("/notes")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(notesQuery),
+  loader: async ({ context }) => {
+    const session = await context.queryClient.ensureQueryData(sessionQuery);
+
+    if (!session?.user) {
+      throw redirect({ to: "/auth" });
+    }
+
+    await context.queryClient.ensureQueryData(notesQuery);
+  },
   component: NotesPage,
 });
 
 function NotesPage() {
+  const queryClient = useQueryClient();
+
   const { data } = useQuery(notesQuery);
-  const { queryClient } = Route.useRouteContext();
   const [title, setTitle] = useState("");
 
   const mutation = useMutation({
@@ -19,7 +29,7 @@ function NotesPage() {
       createNote(import.meta.env.VITE_API_URL, { title: nextTitle }),
     onSuccess: async () => {
       setTitle("");
-      await queryClient.invalidateQueries({ queryKey: ["notes"] });
+      await queryClient.invalidateQueries({ queryKey: notesQuery.queryKey });
     },
   });
 
