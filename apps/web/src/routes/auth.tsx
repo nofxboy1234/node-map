@@ -1,7 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import type { SyntheticEvent } from "react";
 import { authClient } from "../lib/auth-client";
 import { sessionQuery } from "../queries/session";
 
@@ -19,28 +18,15 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-
-  const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  async function onSubmit(event: SyntheticEvent<HTMLFormElement, SubmitEvent>) {
-    event.preventDefault();
+  async function onSignIn(provider: "github" | "google") {
     setErrorMessage("");
 
-    const result =
-      mode === "sign-up"
-        ? await authClient.signUp.email({
-            name,
-            email,
-            password,
-          })
-        : await authClient.signIn.email({
-            email,
-            password,
-          });
+    const result = await authClient.signIn.social({
+      provider,
+      callbackURL: "/",
+    });
 
     if (result.error) {
       setErrorMessage(result.error.message || "Authentication failed");
@@ -53,38 +39,13 @@ function AuthPage() {
 
   return (
     <main>
-      <h1>{mode === "sign-in" ? "Sign in" : "Sign up"}</h1>
-      <button
-        type="button"
-        onClick={() => {
-          setErrorMessage("");
-          setMode(mode === "sign-in" ? "sign-up" : "sign-in");
-        }}
-      >
-        {mode === "sign-in" ? "Need an account?" : "Already have an account?"}
+      <h1>Sign in</h1>
+      <button type="button" onClick={() => onSignIn("google")}>
+        Continue with Google
       </button>
-      <form onSubmit={onSubmit}>
-        {mode === "sign-up" ? (
-          <input
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Name"
-          />
-        ) : null}
-        <input
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="Email"
-          type="email"
-        />
-        <input
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          placeholder="Password"
-          type="password"
-        />
-        <button type="submit">{mode === "sign-in" ? "Sign in" : "Sign up"}</button>
-      </form>
+      <button type="button" onClick={() => onSignIn("github")}>
+        Continue with GitHub
+      </button>
       {errorMessage ? <p>{errorMessage}</p> : null}
     </main>
   );

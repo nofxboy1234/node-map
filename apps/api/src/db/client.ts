@@ -1,23 +1,7 @@
 import * as schema from "@node-map/db";
-import { config } from "dotenv";
-import { drizzle } from "drizzle-orm/postgres-js";
-import { resolve } from "node:path";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/d1";
+import type { AppBindings } from "../env";
 
-config({ path: resolve(process.cwd(), "../../.env.local"), quiet: true });
-
-const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) {
-  throw new Error("Missing DATABASE_URL");
-}
-
-const client = postgres(databaseUrl);
-
-const db = drizzle({
-  client,
-  schema,
-});
-
-export function getDb() {
-  return db;
+export function getDb(env: AppBindings) {
+  return drizzle(env.DB, { schema });
 }

@@ -79,6 +79,18 @@ These commands map to their corresponding tools. For example, `vp dev --port 300
 - [ ] Run `vp check` and `vp test` to validate changes.
 <!--VITE PLUS END-->
 
+## Cloudflare Workers
+
+- Follow the official Cloudflare Workers best practices doc: https://developers.cloudflare.com/workers/best-practices/workers-best-practices/
+- Keep `compatibility_date` current when touching the Worker config.
+- Prefer `nodejs_compat` for the Worker unless there is a clear reason to use a narrower flag.
+- Do not hand-write the Worker `Env` interface. Generate binding types with `wrangler types` and keep `apps/api/worker-configuration.d.ts` in sync with `apps/api/wrangler.jsonc`.
+- Keep secrets out of source control. Use Wrangler secrets for remote environments and `.dev.vars` for local development.
+- Prefer Cloudflare bindings over REST calls to Cloudflare services.
+- Do not store request-scoped state in global scope.
+- Keep Workers observability enabled in Wrangler config.
+- If the frontend is later folded into Cloudflare hosting directly, prefer Workers Static Assets for new Cloudflare-native setups.
+
 ## Project Architecture
 
 - frontend and backend stay separate for now
@@ -86,13 +98,15 @@ These commands map to their corresponding tools. For example, `vp dev --port 300
 - frontend uses TanStack Router and TanStack Query
 - TanStack Query owns freshness
 - TanStack Router is mainly for routing and loader prefetch
-- backend is standalone Nitro + Hono
+- backend is Hono directly on Cloudflare Workers
 - frontend talks to backend through Hono RPC wrapped in a typed api-client package
 - use Drizzle as DB source of truth
 - use drizzle-orm/valibot, not drizzle-valibot
 - use Better Auth for auth
-- use Neon Postgres
-- deploy later to Render
+- use Cloudflare D1
+- use Google/GitHub OAuth on Better Auth
+- use Wrangler env bindings and `.dev.vars`, not `dotenv`
+- deploy to Cloudflare
 - keep the code arranged in a way that makes future adaptation to Void easier
 - keep Hono, TanStack Router, and TanStack Query usage thin so they can be replaced later if needed
 

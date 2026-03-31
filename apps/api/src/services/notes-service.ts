@@ -1,8 +1,9 @@
 import type { NoteDto } from "@node-map/shared";
 import { createNote, listNotes } from "../repositories/notes-repository";
+import type { AppBindings } from "../env";
 
-export async function getNotes(): Promise<NoteDto[]> {
-  const notes = await listNotes();
+export async function getNotes(env: AppBindings): Promise<NoteDto[]> {
+  const notes = await listNotes(env);
 
   return notes.map((note) => ({
     id: note.id,
@@ -11,8 +12,8 @@ export async function getNotes(): Promise<NoteDto[]> {
   }));
 }
 
-export async function addNote(title: string): Promise<NoteDto> {
-  const note = await createNote(title);
+export async function addNote(env: AppBindings, title: string): Promise<NoteDto> {
+  const note = await createNote(env, title);
 
   return {
     id: note.id,

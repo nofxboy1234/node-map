@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "clean": "rm -rf apps/api/.output apps/web/dist",
+    "clean": "rm -rf apps/api/.wrangler apps/web/dist",
     "clean:deps": "find . -type d -name node_modules -prune -exec rm -rf '{}' + && rm -f pnpm-lock.yaml",
     "list:deps": "node ./scripts/list-deps.mjs",
     "knip": "knip",

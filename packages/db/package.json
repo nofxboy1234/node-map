@@ -7,14 +7,13 @@
   },
   "scripts": {
     "generate": "drizzle-kit generate",
-    "migrate": "drizzle-kit migrate"
-  },
-  "dependencies": {
-    "dotenv": "^17.3.1"
+    "migrate": "XDG_CONFIG_HOME=../../apps/api/.wrangler-config wrangler d1 migrations apply node-map --local --config ../../apps/api/wrangler.jsonc",
+    "migrate:remote": "XDG_CONFIG_HOME=../../apps/api/.wrangler-config wrangler d1 migrations apply node-map --remote --config ../../apps/api/wrangler.jsonc"
   },
   "devDependencies": {
     "drizzle-kit": "1.0.0-beta.19",
-    "drizzle-orm": "1.0.0-beta.19"
+    "drizzle-orm": "1.0.0-beta.19",
+    "wrangler": "^4.10.0"
   },
   "peerDependencies": {
     "drizzle-orm": "1.0.0-beta.19"

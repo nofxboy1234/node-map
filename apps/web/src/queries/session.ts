@@ -7,7 +7,7 @@ export const sessionQuery = queryOptions({
     const result = await authClient.getSession();
 
     if (result.error) {
-      throw new Error(result.error.message);
+      throw new Error(result.error.message || "Failed to load session");
     }
 
     return result.data;

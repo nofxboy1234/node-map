@@ -24,7 +24,7 @@ function HomePage() {
           Sign out
         </button>
       ) : (
-        <Link to="/auth">Auth</Link>
+        <Link to="/auth">Sign in</Link>
       )}
       <Link to="/notes">Notes</Link>
     </main>

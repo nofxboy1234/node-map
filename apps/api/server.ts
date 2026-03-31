@@ -1,25 +1,20 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { auth } from "./src/auth/auth";
+import { createAuth } from "./src/auth/auth";
+import { getCorsOrigins } from "./src/env";
+import type { AppBindings } from "./src/env";
 import { notesRoutes } from "./src/routes/notes";
 
-const app = new Hono();
+const app = new Hono<{ Bindings: AppBindings }>();
 
-app.use(
-  "/api/*",
+app.use("/api/*", async (c, next) =>
   cors({
-    origin: (origin) => {
-      if (origin.startsWith("http://localhost:") || origin.startsWith("http://127.0.0.1:")) {
-        return origin;
-      }
-
-      return undefined;
-    },
+    origin: getCorsOrigins(c.env),
     credentials: true,
-  }),
+  })(c, next),
 );
 
-app.on(["GET", "POST"], "/api/auth/*", (c) => auth.handler(c.req.raw));
+app.on(["GET", "POST"], "/api/auth/*", (c) => createAuth(c.env).handler(c.req.raw));
 
 app.get("/health", (c) => c.json({ ok: true }));
 const routes = app.route("/api/notes", notesRoutes);
