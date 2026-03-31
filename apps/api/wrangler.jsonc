@@ -15,9 +15,9 @@
   },
   "d1_databases": [
     {
-      "binding": "DB",
+      "binding": "node_map",
       "database_name": "node-map",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "8415827c-7fc3-4104-9a13-09438196e22c",
       "migrations_dir": "../../packages/db/migrations",
     },
   ],
