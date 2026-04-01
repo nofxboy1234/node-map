@@ -17,6 +17,7 @@ const configHome = resolve(rootDir, "apps/api/.wrangler-config");
 
 const drizzleMigrationPath = getLatestDrizzleMigrationPath();
 const drizzleSql = readFileSync(drizzleMigrationPath, "utf8");
+assertHasNewDrizzleMigration(drizzleSql);
 
 const beforeFiles = getFlatMigrationFiles();
 run(
@@ -51,21 +52,40 @@ function getLatestDrizzleMigrationPath() {
 }
 
 function getFlatMigrationFiles() {
-  return new Set(
-    readdirSync(migrationsDir, { withFileTypes: true })
-      .filter((entry) => entry.isFile() && entry.name.endsWith(".sql"))
-      .map((entry) => resolve(migrationsDir, entry.name)),
-  );
+  return new Set(getFlatMigrationPaths());
 }
 
 function getCreatedMigrationPath(beforeFiles) {
-  const createdPaths = [...getFlatMigrationFiles()].filter((path) => !beforeFiles.has(path));
+  const createdPaths = getFlatMigrationPaths().filter((path) => !beforeFiles.has(path));
   const createdPath = createdPaths[0];
   if (!createdPath || createdPaths[1]) {
     throw new Error("Expected exactly one new Wrangler migration file");
   }
 
   return createdPath;
+}
+
+function getFlatMigrationPaths() {
+  return readdirSync(migrationsDir, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".sql"))
+    .map((entry) => resolve(migrationsDir, entry.name))
+    .sort();
+}
+
+function assertHasNewDrizzleMigration(drizzleSql) {
+  const normalizedDrizzleSql = normalizeSql(drizzleSql);
+  for (const flatMigrationPath of getFlatMigrationPaths()) {
+    const flatMigrationSql = readFileSync(flatMigrationPath, "utf8");
+    if (normalizeSql(flatMigrationSql) === normalizedDrizzleSql) {
+      throw new Error(
+        `No new Drizzle migration to convert. Latest Drizzle SQL already matches ${basename(flatMigrationPath)}.`,
+      );
+    }
+  }
+}
+
+function normalizeSql(sql) {
+  return sql.trim();
 }
 
 function run(command, args, cwd, env) {
