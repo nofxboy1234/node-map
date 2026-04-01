@@ -4,8 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vp dev",
-    "build": "vp build",
-    "preview": "vp preview"
+    "build": "vp build"
   },
   "dependencies": {
     "@node-map/api-client": "workspace:*",
