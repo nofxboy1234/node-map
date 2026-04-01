@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { createAuth } from "./src/auth/auth";
-import { getCorsOrigins } from "./src/env";
+import { getCorsOrigin } from "./src/env";
 import type { AppBindings } from "./src/env";
 import { notesRoutes } from "./src/routes/notes";
 
@@ -9,7 +9,7 @@ const app = new Hono<{ Bindings: AppBindings }>();
 
 app.use("/api/*", async (c, next) =>
   cors({
-    origin: getCorsOrigins(c.env),
+    origin: getCorsOrigin(c.env),
     credentials: true,
   })(c, next),
 );

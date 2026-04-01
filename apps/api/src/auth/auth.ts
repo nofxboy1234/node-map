@@ -2,7 +2,7 @@ import * as schema from "@node-map/db";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { betterAuth } from "better-auth";
 import { getDb } from "../db/client";
-import { getCorsOrigins } from "../env";
+import { getCorsOrigin } from "../env";
 import type { AppBindings } from "../env";
 
 export function createAuth(env: AppBindings) {
@@ -33,7 +33,7 @@ export function createAuth(env: AppBindings) {
   return betterAuth({
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.BETTER_AUTH_URL,
-    trustedOrigins: getCorsOrigins(env),
+    trustedOrigins: [getCorsOrigin(env)],
     database: drizzleAdapter(getDb(env), {
       provider: "sqlite",
       schema,

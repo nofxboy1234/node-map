@@ -89,16 +89,17 @@ These commands map to their corresponding tools. For example, `vp dev --port 300
 - Prefer Cloudflare bindings over REST calls to Cloudflare services.
 - Do not store request-scoped state in global scope.
 - Keep Workers observability enabled in Wrangler config.
-- If the frontend is later folded into Cloudflare hosting directly, prefer Workers Static Assets for new Cloudflare-native setups.
+- Frontend static assets are served from the Worker with Workers Static Assets and SPA fallback.
 
 ## Project Architecture
 
-- frontend and backend stay separate for now
+- frontend and backend code stay in separate workspaces
 - frontend is a static Vite React SPA
 - frontend uses TanStack Router and TanStack Query
 - TanStack Query owns freshness
 - TanStack Router is mainly for routing and loader prefetch
 - backend is Hono directly on Cloudflare Workers
+- production is same-origin Worker hosting
 - frontend talks to backend through Hono RPC wrapped in a typed api-client package
 - use Drizzle as DB source of truth
 - use drizzle-orm/valibot, not drizzle-valibot

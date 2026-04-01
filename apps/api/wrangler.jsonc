@@ -15,6 +15,11 @@
       "head_sampling_rate": 0.01,
     },
   },
+  "assets": {
+    "directory": "../web/dist",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/health"],
+  },
   "d1_databases": [
     {
       "binding": "DB",

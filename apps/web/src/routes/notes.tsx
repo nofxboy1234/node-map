@@ -2,6 +2,7 @@ import { createNote } from "@node-map/api-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
+import { apiBaseUrl } from "../lib/api-base-url";
 import { notesQuery } from "../queries/notes";
 import { sessionQuery } from "../queries/session";
 
@@ -25,8 +26,7 @@ function NotesPage() {
   const [title, setTitle] = useState("");
 
   const mutation = useMutation({
-    mutationFn: (nextTitle: string) =>
-      createNote(import.meta.env.VITE_API_URL, { title: nextTitle }),
+    mutationFn: (nextTitle: string) => createNote(apiBaseUrl, { title: nextTitle }),
     onSuccess: async () => {
       setTitle("");
       await queryClient.invalidateQueries({ queryKey: notesQuery.queryKey });

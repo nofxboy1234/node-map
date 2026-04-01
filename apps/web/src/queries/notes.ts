@@ -1,8 +1,9 @@
 import { queryOptions } from "@tanstack/react-query";
 import { getNotes } from "@node-map/api-client";
+import { apiBaseUrl } from "../lib/api-base-url";
 
 export const notesQuery = queryOptions({
   queryKey: ["notes"],
-  queryFn: () => getNotes(import.meta.env.VITE_API_URL),
+  queryFn: () => getNotes(apiBaseUrl),
   staleTime: 30_000,
 });
