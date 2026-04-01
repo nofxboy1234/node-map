@@ -9,7 +9,6 @@
     "list:deps": "node ./scripts/list-deps.mjs",
     "knip": "knip",
     "dev:local": "./scripts/dev-local.sh",
-    "preview:local": "./scripts/preview-local.sh",
     "dev:api": "vp run @node-map/api#dev",
     "dev:web": "vp run @node-map/web#dev",
     "build:api": "vp run @node-map/api#build",
