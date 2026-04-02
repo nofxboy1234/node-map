@@ -1,14 +1,17 @@
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite-plus";
 
 export default defineConfig({
+  plugins: [tanstackRouter(), react()],
   staged: {
     "*": "vp check --fix",
   },
   lint: {
-    ignorePatterns: ["apps/web/src/routeTree.gen.ts", "packages/db/migrations/**"],
+    ignorePatterns: ["src/routeTree.gen.ts", "migrations/**"],
     options: { typeAware: true, typeCheck: true },
   },
   fmt: {
-    ignorePatterns: ["apps/web/src/routeTree.gen.ts", "packages/db/migrations/**"],
+    ignorePatterns: ["src/routeTree.gen.ts", "migrations/**"],
   },
 });

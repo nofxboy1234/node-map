@@ -84,7 +84,7 @@ These commands map to their corresponding tools. For example, `vp dev --port 300
 - Follow the official Cloudflare Workers best practices doc: https://developers.cloudflare.com/workers/best-practices/workers-best-practices/
 - Keep `compatibility_date` current when touching the Worker config.
 - Prefer `nodejs_compat` for the Worker unless there is a clear reason to use a narrower flag.
-- Do not hand-write the Worker `Env` interface. Generate binding types with `wrangler types` and keep `apps/api/worker-configuration.d.ts` in sync with `apps/api/wrangler.jsonc`.
+- Do not hand-write the Worker `Env` interface. Generate binding types with `wrangler types` and keep `worker-configuration.d.ts` in sync with `wrangler.jsonc`.
 - Keep secrets out of source control. Use Wrangler secrets for remote environments and `.dev.vars` for local development.
 - Prefer Cloudflare bindings over REST calls to Cloudflare services.
 - Do not store request-scoped state in global scope.
@@ -93,14 +93,15 @@ These commands map to their corresponding tools. For example, `vp dev --port 300
 
 ## Project Architecture
 
-- frontend and backend code stay in separate workspaces
 - frontend is a static Vite React SPA
 - frontend uses TanStack Router and TanStack Query
 - TanStack Query owns freshness
 - TanStack Router is mainly for routing and loader prefetch
 - backend is Hono directly on Cloudflare Workers
 - production is same-origin Worker hosting
-- frontend talks to backend through Hono RPC wrapped in a typed api-client package
+- keep app code under `src/app`, `src/routes`, `src/lib`, `src/server`, and `src/shared`
+- use simple package imports like `#src/...` , not workspace package boundaries
+- frontend talks to backend through thin shared API helpers in `src/shared/api`
 - use Drizzle as DB source of truth
 - use drizzle-orm/valibot, not drizzle-valibot
 - use Better Auth for auth
@@ -113,12 +114,10 @@ These commands map to their corresponding tools. For example, `vp dev --port 300
 
 Implementation order:
 
-1. workspace foundation
-2. packages/db
-3. packages/shared
-4. apps/api
-5. packages/api-client
-6. apps/web
-7. first end-to-end resource slice
-8. auth
-9. deploy setup
+1. app foundation
+2. shared db and schemas
+3. backend
+4. frontend
+5. first end-to-end resource slice
+6. auth
+7. deploy setup

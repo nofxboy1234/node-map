@@ -3,20 +3,46 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "imports": {
+    "#server": "./server.ts",
+    "#src/*": "./src/*"
+  },
   "scripts": {
-    "clean": "rm -rf apps/api/.wrangler apps/web/dist",
-    "clean:deps": "find . -type d -name node_modules -prune -exec rm -rf '{}' + && rm -f pnpm-lock.yaml",
-    "list:deps": "node ./scripts/list-deps.mjs",
+    "clean": "rm -rf .wrangler dist",
     "knip": "knip",
-    "dev:api": "vp run @node-map/api#dev",
-    "dev:web": "vp run @node-map/web#dev",
-    "build:api": "vp run @node-map/api#build",
-    "build:web": "vp run @node-map/web#build"
+    "dev:api": "wrangler dev",
+    "dev:web": "vp dev",
+    "build:api": "wrangler deploy --dry-run",
+    "build:web": "vp build",
+    "deploy": "wrangler deploy",
+    "types": "wrangler types ./worker-configuration.d.ts --include-runtime false",
+    "db:generate": "drizzle-kit generate",
+    "db:create:d1-migration": "node ./scripts/create-d1-migration.mjs",
+    "db:migrate": "yes | wrangler d1 migrations apply node-map --local --config ./wrangler.jsonc",
+    "db:migrate:remote": "wrangler d1 migrations apply node-map --remote --config ./wrangler.jsonc"
+  },
+  "dependencies": {
+    "@hono/standard-validator": "^0.2.2",
+    "@tanstack/react-query": "^5.96.1",
+    "@tanstack/react-router": "^1.168.10",
+    "better-auth": "^1.5.6",
+    "drizzle-orm": "1.0.0-beta.19",
+    "hono": "^4.12.10",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "valibot": "^1.3.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260402.1",
+    "@tanstack/router-plugin": "^1.167.12",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "drizzle-kit": "1.0.0-beta.19",
     "knip": "^6.2.0",
     "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.15",
-    "vite-plus": "latest"
+    "vite-plus": "^0.1.15",
+    "wrangler": "^4.80.0"
   },
   "packageManager": "pnpm@10.33.0",
   "pnpm": {

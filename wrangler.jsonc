@@ -1,0 +1,31 @@
+{
+  "name": "node-map-api",
+  "main": "server.ts",
+  "workers_dev": true,
+  "preview_urls": true,
+  "compatibility_date": "2026-03-31",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "head_sampling_rate": 1,
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 0.01,
+    },
+  },
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/health"],
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "node-map",
+      "database_id": "22077058-ca51-4fb5-8387-b761686b03e7",
+      "migrations_dir": "./migrations",
+    },
+  ],
+}

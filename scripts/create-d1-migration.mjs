@@ -5,15 +5,13 @@ import { fileURLToPath } from "node:url";
 
 const migrationName = process.argv[2];
 if (!migrationName) {
-  throw new Error("Missing migration name. Run: vp run @node-map/db#create:d1-migration -- <name>");
+  throw new Error("Missing migration name. Run: vp run db:create:d1-migration -- <name>");
 }
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const dbDir = resolve(rootDir, "packages/db");
-const migrationsDir = resolve(dbDir, "migrations");
+const migrationsDir = resolve(rootDir, "migrations");
 const wranglerBin = resolve(rootDir, "node_modules/.bin/wrangler");
-const wranglerConfigPath = resolve(dbDir, "../../apps/api/wrangler.jsonc");
-const configHome = resolve(rootDir, "apps/api/.wrangler-config");
+const wranglerConfigPath = resolve(rootDir, "wrangler.jsonc");
 
 const drizzleMigrationPath = getLatestDrizzleMigrationPath();
 const drizzleSql = readFileSync(drizzleMigrationPath, "utf8");
@@ -23,11 +21,8 @@ const beforeFiles = getFlatMigrationFiles();
 run(
   wranglerBin,
   ["d1", "migrations", "create", "node-map", migrationName, "--config", wranglerConfigPath],
-  dbDir,
-  {
-    ...process.env,
-    XDG_CONFIG_HOME: configHome,
-  },
+  rootDir,
+  process.env,
 );
 
 const createdPath = getCreatedMigrationPath(beforeFiles);
@@ -45,7 +40,7 @@ function getLatestDrizzleMigrationPath() {
 
   const latestPath = migrationDirs.at(-1);
   if (!latestPath) {
-    throw new Error("Missing Drizzle migration. Run: vp run @node-map/db#generate");
+    throw new Error("Missing Drizzle migration. Run: vp run db:generate");
   }
 
   return latestPath;
@@ -56,7 +51,7 @@ function getFlatMigrationFiles() {
 }
 
 function getCreatedMigrationPath(beforeFiles) {
-  const createdPaths = getFlatMigrationPaths().filter((path) => !beforeFiles.has(path));
+  const createdPaths = getFlatMigrationPaths().filter((filePath) => !beforeFiles.has(filePath));
   const createdPath = createdPaths[0];
   if (!createdPath || createdPaths[1]) {
     throw new Error("Expected exactly one new Wrangler migration file");

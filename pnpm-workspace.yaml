@@ -1,5 +1,0 @@
-shamefullyHoist: true
-
-packages:
-  - apps/*
-  - packages/*

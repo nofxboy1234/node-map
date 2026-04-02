@@ -1,4 +1,12 @@
 {
   "extends": "./tsconfig.base.json",
-  "include": []
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "types": ["vite/client", "@cloudflare/workers-types"],
+    "paths": {
+      "#server": ["./server.ts"],
+      "#src/*": ["./src/*"]
+    }
+  },
+  "include": ["server.ts", "worker-configuration.d.ts", "src", "drizzle.config.ts"]
 }
