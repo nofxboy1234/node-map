@@ -17,10 +17,10 @@
     "@node-map/shared": "workspace:*",
     "better-auth": "^1.5.6",
     "drizzle-orm": "1.0.0-beta.19",
-    "hono": "^4.12.9"
+    "hono": "^4.12.10"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260327.0",
-    "wrangler": "^4.10.0"
+    "@cloudflare/workers-types": "^4.20260402.1",
+    "wrangler": "^4.80.0"
   }
 }
