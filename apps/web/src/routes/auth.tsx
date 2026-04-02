@@ -25,7 +25,7 @@ function AuthPage() {
 
     const result = await authClient.signIn.social({
       provider,
-      callbackURL: "/",
+      callbackURL: window.location.origin,
     });
 
     if (result.error) {
