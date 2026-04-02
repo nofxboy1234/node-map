@@ -6,10 +6,10 @@
     "./client": "./src/client.ts"
   },
   "scripts": {
-    "dev": "XDG_CONFIG_HOME=./.wrangler-config wrangler dev",
-    "types": "XDG_CONFIG_HOME=./.wrangler-config wrangler types ./worker-configuration.d.ts --include-runtime false",
-    "build": "XDG_CONFIG_HOME=./.wrangler-config wrangler deploy --dry-run",
-    "deploy": "XDG_CONFIG_HOME=./.wrangler-config wrangler deploy"
+    "dev": "wrangler dev",
+    "types": "wrangler types ./worker-configuration.d.ts --include-runtime false",
+    "build": "wrangler deploy --dry-run",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
     "@hono/standard-validator": "^0.2.2",

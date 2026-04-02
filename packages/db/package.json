@@ -8,8 +8,8 @@
   "scripts": {
     "generate": "drizzle-kit generate",
     "create:d1-migration": "node ../../scripts/create-d1-migration.mjs",
-    "migrate": "yes | XDG_CONFIG_HOME=../../apps/api/.wrangler-config wrangler d1 migrations apply node-map --local --config ../../apps/api/wrangler.jsonc",
-    "migrate:remote": "XDG_CONFIG_HOME=../../apps/api/.wrangler-config wrangler d1 migrations apply node-map --remote --config ../../apps/api/wrangler.jsonc"
+    "migrate": "yes | wrangler d1 migrations apply node-map --local --config ../../apps/api/wrangler.jsonc",
+    "migrate:remote": "wrangler d1 migrations apply node-map --remote --config ../../apps/api/wrangler.jsonc"
   },
   "devDependencies": {
     "drizzle-kit": "1.0.0-beta.19",
