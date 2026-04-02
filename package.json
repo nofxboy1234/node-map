@@ -15,7 +15,7 @@
     "build:web": "vp run @node-map/web#build"
   },
   "devDependencies": {
-    "knip": "^6.1.1",
+    "knip": "^6.2.0",
     "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.15",
     "vite-plus": "latest"
   },
