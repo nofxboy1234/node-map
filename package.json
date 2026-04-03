@@ -16,8 +16,7 @@
     "build:web": "vp build",
     "deploy": "wrangler deploy",
     "types": "wrangler types ./worker-configuration.d.ts --include-runtime false",
-    "db:generate": "drizzle-kit generate",
-    "db:create:d1-migration": "node ./scripts/create-d1-migration.mjs",
+    "db:generate": "node ./scripts/generate-migrations.mjs",
     "db:migrate": "yes | wrangler d1 migrations apply node-map --local --config ./wrangler.jsonc",
     "db:migrate:remote": "wrangler d1 migrations apply node-map --remote --config ./wrangler.jsonc"
   },

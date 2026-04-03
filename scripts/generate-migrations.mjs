@@ -5,20 +5,33 @@ import { fileURLToPath } from "node:url";
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const migrationsDir = resolve(rootDir, "migrations");
+const drizzleBin = resolve(rootDir, "node_modules/.bin/drizzle-kit");
 const wranglerBin = resolve(rootDir, "node_modules/.bin/wrangler");
 const wranglerConfigPath = resolve(rootDir, "wrangler.jsonc");
 
-const drizzleMigrationPath = getLatestDrizzleMigrationPath();
-const migrationName = process.argv[2] ?? basename(dirname(drizzleMigrationPath));
-const drizzleSql = readFileSync(drizzleMigrationPath, "utf8");
-assertHasNewDrizzleMigration(drizzleSql);
+run(drizzleBin, ["generate"], rootDir);
 
+const drizzleMigrationPath = getLatestDrizzleMigrationPath();
+if (!drizzleMigrationPath) {
+  console.log("No Drizzle migrations found.");
+  process.exit(0);
+}
+
+const drizzleSql = readFileSync(drizzleMigrationPath, "utf8");
+const matchingFlatMigrationPath = getMatchingFlatMigrationPath(drizzleSql);
+if (matchingFlatMigrationPath) {
+  console.log(
+    `No new D1 migration to create. Latest Drizzle SQL already matches ${basename(matchingFlatMigrationPath)}.`,
+  );
+  process.exit(0);
+}
+
+const migrationName = basename(dirname(drizzleMigrationPath));
 const beforeFiles = getFlatMigrationFiles();
 run(
   wranglerBin,
   ["d1", "migrations", "create", "node-map", migrationName, "--config", wranglerConfigPath],
   rootDir,
-  process.env,
 );
 
 const createdPath = getCreatedMigrationPath(beforeFiles);
@@ -34,12 +47,20 @@ function getLatestDrizzleMigrationPath() {
     .map((entry) => resolve(migrationsDir, entry.name, "migration.sql"))
     .sort();
 
-  const latestPath = migrationDirs.at(-1);
-  if (!latestPath) {
-    throw new Error("Missing Drizzle migration. Run: vp run db:generate");
+  return migrationDirs.at(-1);
+}
+
+function getMatchingFlatMigrationPath(drizzleSql) {
+  const normalizedDrizzleSql = normalizeSql(drizzleSql);
+
+  for (const flatMigrationPath of getFlatMigrationPaths()) {
+    const flatMigrationSql = readFileSync(flatMigrationPath, "utf8");
+    if (normalizeSql(flatMigrationSql) === normalizedDrizzleSql) {
+      return flatMigrationPath;
+    }
   }
 
-  return latestPath;
+  return null;
 }
 
 function getFlatMigrationFiles() {
@@ -63,26 +84,14 @@ function getFlatMigrationPaths() {
     .sort();
 }
 
-function assertHasNewDrizzleMigration(drizzleSql) {
-  const normalizedDrizzleSql = normalizeSql(drizzleSql);
-  for (const flatMigrationPath of getFlatMigrationPaths()) {
-    const flatMigrationSql = readFileSync(flatMigrationPath, "utf8");
-    if (normalizeSql(flatMigrationSql) === normalizedDrizzleSql) {
-      throw new Error(
-        `No new Drizzle migration to convert. Latest Drizzle SQL already matches ${basename(flatMigrationPath)}.`,
-      );
-    }
-  }
-}
-
 function normalizeSql(sql) {
   return sql.trim();
 }
 
-function run(command, args, cwd, env) {
+function run(command, args, cwd) {
   const result = spawnSync(command, args, {
     cwd,
-    env,
+    env: process.env,
     stdio: "inherit",
   });
 
