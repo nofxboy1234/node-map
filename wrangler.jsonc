@@ -24,7 +24,7 @@
     {
       "binding": "DB",
       "database_name": "node-map",
-      "database_id": "22077058-ca51-4fb5-8387-b761686b03e7",
+      "database_id": "61ecff2d-41b3-4329-9688-0f701c31563c",
       "migrations_dir": "./migrations",
     },
   ],
