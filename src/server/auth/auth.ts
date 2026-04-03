@@ -2,7 +2,6 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import * as schema from "#src/shared/db/schema";
 import { getDb } from "../db/client";
-import { getCorsOrigin } from "../env";
 import type { AppBindings } from "../env";
 
 export function createAuth(env: AppBindings) {
@@ -33,7 +32,6 @@ export function createAuth(env: AppBindings) {
   return betterAuth({
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.BETTER_AUTH_URL,
-    trustedOrigins: [getCorsOrigin(env)],
     database: drizzleAdapter(getDb(env), {
       provider: "sqlite",
       schema,

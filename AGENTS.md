@@ -82,6 +82,7 @@ These commands map to their corresponding tools. For example, `vp dev --port 300
 ## Cloudflare Workers
 
 - Follow the official Cloudflare Workers best practices doc: https://developers.cloudflare.com/workers/best-practices/workers-best-practices/
+- Use `@cloudflare/vite-plugin` for local dev and builds. Prefer `vp dev`, `vp build`, and `vp preview` over `wrangler dev`.
 - Keep `compatibility_date` current when touching the Worker config.
 - Prefer `nodejs_compat` for the Worker unless there is a clear reason to use a narrower flag.
 - Do not hand-write the Worker `Env` interface. Generate binding types with `wrangler types` and keep `worker-configuration.d.ts` in sync with `wrangler.jsonc`.
