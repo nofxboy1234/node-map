@@ -3,17 +3,13 @@ import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const migrationName = process.argv[2];
-if (!migrationName) {
-  throw new Error("Missing migration name. Run: vp run db:create:d1-migration -- <name>");
-}
-
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const migrationsDir = resolve(rootDir, "migrations");
 const wranglerBin = resolve(rootDir, "node_modules/.bin/wrangler");
 const wranglerConfigPath = resolve(rootDir, "wrangler.jsonc");
 
 const drizzleMigrationPath = getLatestDrizzleMigrationPath();
+const migrationName = process.argv[2] ?? basename(dirname(drizzleMigrationPath));
 const drizzleSql = readFileSync(drizzleMigrationPath, "utf8");
 assertHasNewDrizzleMigration(drizzleSql);
 
