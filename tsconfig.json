@@ -1,6 +1,12 @@
 {
-  "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "target": "es2023",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "skipLibCheck": true,
     "jsx": "react-jsx",
     "types": ["vite/client", "@cloudflare/workers-types"],
     "paths": {
