@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { sessionQuery } from "../queries/session";
 import { authClient } from "../lib/auth-client";
 
@@ -8,11 +8,14 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data } = useQuery(sessionQuery);
 
   async function onSignOut() {
-    await authClient.signOut();
+    await authClient.signOut({
+      fetchOptions: { onSuccess: async () => await navigate({ to: "/goodbye" }) },
+    });
     await queryClient.invalidateQueries({ queryKey: sessionQuery.queryKey });
   }
 
