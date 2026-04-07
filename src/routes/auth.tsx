@@ -1,24 +1,16 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import * as v from "valibot";
 import { authClient } from "../lib/auth-client";
 import { sessionQuery } from "../queries/session";
 
-type AuthSearch = {
-  redirect: string;
-};
-
-function toRedirect(value: unknown): string {
-  if (typeof value === "string" && value.startsWith("/") && !value.startsWith("//")) {
-    return value;
-  }
-  return "/";
-}
+const authSearchSchema = v.object({
+  redirect: v.optional(v.fallback(v.pipe(v.string(), v.regex(/^\/(?!\/).*/)), "/")),
+});
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): AuthSearch => ({
-    redirect: toRedirect(search.redirect),
-  }),
+  validateSearch: authSearchSchema,
   beforeLoad: async ({ context, search }) => {
     const session = await context.queryClient.ensureQueryData(sessionQuery);
 
