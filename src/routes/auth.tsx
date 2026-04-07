@@ -4,18 +4,33 @@ import { useState } from "react";
 import { authClient } from "../lib/auth-client";
 import { sessionQuery } from "../queries/session";
 
+type AuthSearch = {
+  redirect: string;
+};
+
+function toRedirect(value: unknown): string {
+  if (typeof value === "string" && value.startsWith("/") && !value.startsWith("//")) {
+    return value;
+  }
+  return "/";
+}
+
 export const Route = createFileRoute("/auth")({
-  loader: async ({ context }) => {
+  validateSearch: (search: Record<string, unknown>): AuthSearch => ({
+    redirect: toRedirect(search.redirect),
+  }),
+  beforeLoad: async ({ context, search }) => {
     const session = await context.queryClient.ensureQueryData(sessionQuery);
 
     if (session?.user) {
-      throw redirect({ to: "/" });
+      throw redirect({ href: search.redirect });
     }
   },
   component: AuthPage,
 });
 
 function AuthPage() {
+  const { redirect: redirectTo } = Route.useSearch();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
@@ -25,7 +40,7 @@ function AuthPage() {
 
     const result = await authClient.signIn.social({
       provider,
-      callbackURL: window.location.origin,
+      callbackURL: window.location.href,
     });
 
     if (result.error) {
@@ -34,7 +49,7 @@ function AuthPage() {
     }
 
     await queryClient.invalidateQueries({ queryKey: sessionQuery.queryKey });
-    await navigate({ to: "/" });
+    await navigate({ href: redirectTo });
   }
 
   return (

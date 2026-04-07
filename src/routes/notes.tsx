@@ -7,11 +7,14 @@ import { notesQuery } from "../queries/notes";
 import { sessionQuery } from "../queries/session";
 
 export const Route = createFileRoute("/notes")({
-  loader: async ({ context }) => {
+  loader: async ({ context, location }) => {
     const session = await context.queryClient.ensureQueryData(sessionQuery);
 
     if (!session?.user) {
-      throw redirect({ to: "/auth" });
+      throw redirect({
+        to: "/auth",
+        search: { redirect: location.href },
+      });
     }
 
     await context.queryClient.ensureQueryData(notesQuery);

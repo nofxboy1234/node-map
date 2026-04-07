@@ -24,7 +24,9 @@ function HomePage() {
           Sign out
         </button>
       ) : (
-        <Link to="/auth">Sign in</Link>
+        <Link to="/auth" search={{ redirect: "/" }}>
+          Sign in
+        </Link>
       )}
       <Link to="/notes">Notes</Link>
     </main>
