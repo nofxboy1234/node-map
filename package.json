@@ -58,9 +58,6 @@
     "entry": [
       "test/**/*.spec.ts",
       "test/env.d.ts"
-    ],
-    "ignoreDependencies": [
-      "cloudflare"
     ]
   }
 }
