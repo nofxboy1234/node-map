@@ -6,7 +6,7 @@ import { authClient } from "../lib/auth-client";
 import { sessionQuery } from "../queries/session";
 
 const authSearchSchema = v.object({
-  redirect: v.optional(v.fallback(v.pipe(v.string(), v.regex(/^\/(?!\/).*/)), "/")),
+  redirect: v.fallback(v.pipe(v.string(), v.regex(/^\/(?!\/).*/)), "/"),
 });
 
 export const Route = createFileRoute("/auth")({
