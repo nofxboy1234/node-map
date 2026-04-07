@@ -10,6 +10,8 @@
   "scripts": {
     "clean": "rm -rf .wrangler dist",
     "knip": "knip",
+    "postinstall": "node ./scripts/link-vitest.mjs",
+    "test": "node ./scripts/test.mjs",
     "deploy": "vp build && wrangler deploy",
     "types": "wrangler types ./worker-configuration.d.ts --include-runtime false",
     "db:generate": "node ./scripts/generate-migrations.mjs",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.31.0",
+    "@cloudflare/vitest-pool-workers": "^0.14.1",
     "@cloudflare/workers-types": "^4.20260405.1",
     "@tanstack/router-plugin": "^1.167.12",
     "@types/react": "^19.2.14",
@@ -52,5 +55,16 @@
         "vitest"
       ]
     }
+  },
+  "knip": {
+    "entry": [
+      "vitest.config.ts",
+      "test/**/*.spec.ts",
+      "test/env.d.ts"
+    ],
+    "ignoreDependencies": [
+      "cloudflare",
+      "vitest"
+    ]
   }
 }
