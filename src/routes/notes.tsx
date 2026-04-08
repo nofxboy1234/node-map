@@ -46,7 +46,7 @@ function NotesPage() {
           const result = v.safeParse(noteInsertSchema, { title });
 
           if (!result.success) {
-            setValidationError("Title is required");
+            setValidationError(result.issues[0]!.message);
             return;
           }
 
