@@ -3,7 +3,7 @@ import { notes } from "#src/shared/db/schema";
 import { getDb } from "../db/client";
 import type { AppBindings } from "../env";
 
-type NoteRow = typeof notes.$inferSelect;
+export type NoteRow = typeof notes.$inferSelect;
 
 export function listNotes(env: AppBindings) {
   return getDb(env).select().from(notes).orderBy(desc(notes.createdAt));
