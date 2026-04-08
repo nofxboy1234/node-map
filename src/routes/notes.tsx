@@ -63,6 +63,7 @@ function NotesPage() {
           onChange={(event) => {
             setTitle(event.target.value);
             setValidationError("");
+            mutation.reset();
           }}
           placeholder="New note"
         />
@@ -71,6 +72,7 @@ function NotesPage() {
         </button>
       </form>
       {validationError ? <p>{validationError}</p> : null}
+      {mutation.error ? <p>{mutation.error.message}</p> : null}
 
       {data.notes.length === 0 ? (
         <p>No notes yet.</p>
