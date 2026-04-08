@@ -30,6 +30,10 @@ function NotesPage() {
   const [title, setTitle] = useState("");
   const [validationError, setValidationError] = useState("");
 
+  if (!data) {
+    throw new Error("Missing notes data");
+  }
+
   const mutation = useMutation({
     mutationFn: (input: v.InferOutput<typeof noteInsertSchema>) => createNote(apiBaseUrl, input),
     onSuccess: async () => {
@@ -67,7 +71,16 @@ function NotesPage() {
         </button>
       </form>
       {validationError ? <p>{validationError}</p> : null}
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+
+      {data.notes.length === 0 ? (
+        <p>No notes yet.</p>
+      ) : (
+        <ul>
+          {data.notes.map((note) => (
+            <li key={note.id}>{note.title}</li>
+          ))}
+        </ul>
+      )}
     </main>
   );
 }
