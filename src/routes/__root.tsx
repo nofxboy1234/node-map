@@ -3,7 +3,9 @@ import type { RouterContext } from "../app/router-context";
 import { sessionQuery } from "../queries/session";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-  loader: ({ context }) => context.queryClient.ensureQueryData(sessionQuery),
+  beforeLoad: async ({ context }) => ({
+    session: await context.queryClient.ensureQueryData(sessionQuery),
+  }),
   component: Root,
 });
 

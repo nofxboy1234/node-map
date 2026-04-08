@@ -6,13 +6,10 @@ import { createNote } from "#src/shared/api";
 import { noteInsertSchema } from "#src/shared";
 import { apiBaseUrl } from "../lib/api-base-url";
 import { notesQuery } from "../queries/notes";
-import { sessionQuery } from "../queries/session";
 
 export const Route = createFileRoute("/notes")({
   loader: async ({ context, location }) => {
-    const session = await context.queryClient.ensureQueryData(sessionQuery);
-
-    if (!session?.user) {
+    if (!context.session?.user) {
       throw redirect({
         to: "/auth",
         search: { redirect: location.href },

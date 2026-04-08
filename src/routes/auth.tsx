@@ -11,10 +11,8 @@ const authSearchSchema = v.object({
 
 export const Route = createFileRoute("/auth")({
   validateSearch: authSearchSchema,
-  beforeLoad: async ({ context, search }) => {
-    const session = await context.queryClient.ensureQueryData(sessionQuery);
-
-    if (session?.user) {
+  beforeLoad: ({ context, search }) => {
+    if (context.session?.user) {
       throw redirect({ href: search.redirect });
     }
   },
