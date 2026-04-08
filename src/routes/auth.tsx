@@ -34,7 +34,7 @@ function AuthPage() {
     });
 
     if (result.error) {
-      setErrorMessage(result.error.message || "Authentication failed");
+      setErrorMessage(result.error.message!);
       return;
     }
 
