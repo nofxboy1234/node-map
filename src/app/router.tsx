@@ -9,6 +9,7 @@ export function makeRouter(queryClient: QueryClient) {
     context: {
       queryClient,
     } satisfies RouterContext,
+    defaultPreload: "intent",
   });
 }
 
