@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useState } from "react";
-import * as v from "valibot";
+import { Field, Form, reset, useForm } from "@formisch/react";
 import { createNote } from "#src/shared/api";
 import { noteInsertSchema } from "#src/shared";
 import { apiBaseUrl } from "../lib/api-base-url";
@@ -24,51 +23,41 @@ export const Route = createFileRoute("/notes")({
 function NotesPage() {
   const queryClient = useQueryClient();
   const { data } = useQuery(notesQuery);
-  const [title, setTitle] = useState("");
-  const [validationError, setValidationError] = useState("");
+  const form = useForm({
+    schema: noteInsertSchema,
+    initialInput: { title: "" },
+  });
 
   if (!data) {
     throw new Error("Missing notes data");
   }
 
   const mutation = useMutation({
-    mutationFn: (input: v.InferOutput<typeof noteInsertSchema>) => createNote(apiBaseUrl, input),
+    mutationFn: (input: { title: string }) => createNote(apiBaseUrl, input),
     onSuccess: async () => {
-      setTitle("");
+      reset(form);
       await queryClient.invalidateQueries({ queryKey: notesQuery.queryKey });
     },
   });
 
   return (
     <main>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          const result = v.safeParse(noteInsertSchema, { title });
-
-          if (!result.success) {
-            setValidationError(result.issues[0]!.message);
-            return;
-          }
-
-          setValidationError("");
-          mutation.mutate(result.output);
+      <Form
+        of={form}
+        onSubmit={(output) => {
+          mutation.mutate(output);
         }}
       >
-        <input
-          value={title}
-          onChange={(event) => {
-            setTitle(event.target.value);
-            setValidationError("");
-            mutation.reset();
-          }}
-          placeholder="New note"
-        />
+        <Field of={form} path={["title"]}>
+          {(field) => <input {...field.props} value={field.input} placeholder="New note" />}
+        </Field>
         <button type="submit" disabled={mutation.isPending}>
           Add note
         </button>
-      </form>
-      {validationError ? <p>{validationError}</p> : null}
+      </Form>
+      <Field of={form} path={["title"]}>
+        {(field) => (field.errors ? <p>{field.errors[0]}</p> : <></>)}
+      </Field>
       {mutation.error ? <p>{mutation.error.message}</p> : null}
 
       {data.notes.length === 0 ? (
