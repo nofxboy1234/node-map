@@ -12,6 +12,13 @@ This project uses plain pnpm with direct tool dependencies.
 - use `pnpm run check` to run format, lint, and type checking
 - use `pnpm exec <tool>` for one-off local binaries
 
+## Drizzle Version Policy
+
+- this project uses `drizzle-kit` and `drizzle-orm` v1.0 RC versions
+- for new work, use the updated Drizzle APIs instead of legacy v1 patterns
+- prefer Relational Queries v2: https://orm.drizzle.team/docs/relations-v1-v2
+- `src/shared/db/auth-schema.ts` (Better Auth schema) had relations updated from v1 to v2 and should stay on v2 style
+
 ## Review Checklist for Agents
 
 - [ ] Run `pnpm install` after pulling remote changes and before getting started.
