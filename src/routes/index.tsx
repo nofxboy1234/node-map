@@ -103,7 +103,7 @@ function HomePage() {
                   inputMode="decimal"
                   value={field.input ?? ""}
                   onChange={(event) => {
-                    field.onChange(event.target.valueAsNumber);
+                    field.onChange(event.currentTarget.valueAsNumber);
                   }}
                 />
                 {field.errors ? <p className={styles.error}>{field.errors[0]}</p> : null}
@@ -123,7 +123,7 @@ function HomePage() {
                   inputMode="decimal"
                   value={field.input ?? ""}
                   onChange={(event) => {
-                    field.onChange(event.target.valueAsNumber);
+                    field.onChange(event.currentTarget.valueAsNumber);
                   }}
                 />
                 {field.errors ? <p className={styles.error}>{field.errors[0]}</p> : null}

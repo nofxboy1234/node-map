@@ -23,6 +23,7 @@ export const Route = createFileRoute("/notes")({
 function NotesPage() {
   const queryClient = useQueryClient();
   const { data } = useQuery(notesQuery);
+
   const form = useForm({
     schema: noteInsertSchema,
     initialInput: { title: "" },
@@ -49,15 +50,17 @@ function NotesPage() {
         }}
       >
         <Field of={form} path={["title"]}>
-          {(field) => <input {...field.props} value={field.input} placeholder="New note" />}
+          {(field) => (
+            <>
+              <input {...field.props} value={field.input} placeholder="New note" />
+              {field.errors ? <p>{field.errors[0]}</p> : null}
+            </>
+          )}
         </Field>
         <button type="submit" disabled={mutation.isPending}>
           Add note
         </button>
       </Form>
-      <Field of={form} path={["title"]}>
-        {(field) => (field.errors ? <p>{field.errors[0]}</p> : <></>)}
-      </Field>
       {mutation.error ? <p>{mutation.error.message}</p> : null}
 
       {data.notes.length === 0 ? (
