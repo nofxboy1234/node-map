@@ -34,6 +34,7 @@ This project uses plain pnpm with direct tool dependencies.
 
 - frontend is a static Vite React SPA
 - frontend uses TanStack Router and TanStack Query
+- frontend uses Formisch for forms
 - TanStack Query owns freshness
 - TanStack Router is mainly for routing and loader prefetch
 - backend is Hono directly on Cloudflare Workers
