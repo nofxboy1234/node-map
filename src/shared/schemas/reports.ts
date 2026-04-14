@@ -7,6 +7,7 @@ const locationSchema = v.object({
 });
 
 const devilTypeSchema = v.pipe(v.string(), v.minLength(1));
+const incidentTitleSchema = v.pipe(v.string(), v.minLength(1));
 
 export const createReportInputSchema = v.object({
   description: v.pipe(v.string(), v.minLength(1)),
@@ -14,6 +15,19 @@ export const createReportInputSchema = v.object({
   devilType: v.optional(devilTypeSchema),
   urgency: v.picklist(reportUrgencies),
 });
+
+export const triageReportActionInputSchema = v.variant("action", [
+  v.object({
+    action: v.literal("mark_duplicate"),
+  }),
+  v.object({
+    action: v.literal("reject"),
+  }),
+  v.object({
+    action: v.literal("escalate"),
+    incidentTitle: incidentTitleSchema,
+  }),
+]);
 
 export const reportDtoSchema = v.object({
   id: v.string(),
@@ -27,4 +41,13 @@ export const reportDtoSchema = v.object({
 
 export const createReportResponseSchema = v.object({
   report: reportDtoSchema,
+});
+
+export const triageQueueResponseSchema = v.object({
+  reports: v.array(reportDtoSchema),
+});
+
+export const triageReportResponseSchema = v.object({
+  report: reportDtoSchema,
+  incidentId: v.nullable(v.string()),
 });
