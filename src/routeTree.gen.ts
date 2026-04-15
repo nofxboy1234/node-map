@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TriageRouteImport } from './routes/triage'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as GoodbyeRouteImport } from './routes/goodbye'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TriageRoute = TriageRouteImport.update({
+  id: '/triage',
+  path: '/triage',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NotesRoute = NotesRouteImport.update({
   id: '/notes',
   path: '/notes',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/goodbye': typeof GoodbyeRoute
   '/notes': typeof NotesRoute
+  '/triage': typeof TriageRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/goodbye': typeof GoodbyeRoute
   '/notes': typeof NotesRoute
+  '/triage': typeof TriageRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/goodbye': typeof GoodbyeRoute
   '/notes': typeof NotesRoute
+  '/triage': typeof TriageRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/goodbye' | '/notes'
+  fullPaths: '/' | '/auth' | '/goodbye' | '/notes' | '/triage'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/goodbye' | '/notes'
-  id: '__root__' | '/' | '/auth' | '/goodbye' | '/notes'
+  to: '/' | '/auth' | '/goodbye' | '/notes' | '/triage'
+  id: '__root__' | '/' | '/auth' | '/goodbye' | '/notes' | '/triage'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +76,18 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   GoodbyeRoute: typeof GoodbyeRoute
   NotesRoute: typeof NotesRoute
+  TriageRoute: typeof TriageRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/triage': {
+      id: '/triage'
+      path: '/triage'
+      fullPath: '/triage'
+      preLoaderRoute: typeof TriageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/notes': {
       id: '/notes'
       path: '/notes'
@@ -107,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   GoodbyeRoute: GoodbyeRoute,
   NotesRoute: NotesRoute,
+  TriageRoute: TriageRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

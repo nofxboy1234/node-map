@@ -1,5 +1,5 @@
 import * as v from "valibot";
-import { createReportResponseSchema } from "#src/shared";
+import { createReportResponseSchema, triageQueueResponseSchema } from "#src/shared";
 import type { InferRequestType } from "hono/client";
 import { createApiClient } from "./client";
 
@@ -20,4 +20,15 @@ export async function createReport(
   }
 
   return v.parse(createReportResponseSchema, await res.json());
+}
+
+export async function getTriageQueue(baseUrl: string) {
+  const client = createApiClient(baseUrl);
+  const res = await client.api.reports.triage.$get();
+
+  if (!res.ok) {
+    throw new Error("Failed to get triage queue");
+  }
+
+  return v.parse(triageQueueResponseSchema, await res.json());
 }

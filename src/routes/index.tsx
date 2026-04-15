@@ -64,6 +64,7 @@ function HomePage() {
           </Link>
         )}
         <Link to="/notes">Notes</Link>
+        <Link to="/triage">Triage</Link>
       </section>
 
       <section className={styles.formSection}>

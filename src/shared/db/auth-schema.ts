@@ -1,5 +1,6 @@
 import { defineRelations } from "drizzle-orm";
 import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { roles, type Role } from "../domain/psdip";
 
 export const user = sqliteTable("user", {
   id: text("id").primaryKey(),
@@ -7,6 +8,7 @@ export const user = sqliteTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: integer("email_verified", { mode: "boolean" }).default(false).notNull(),
   image: text("image"),
+  role: text("role", { enum: roles }).$type<Role>().default("civilian").notNull(),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .$defaultFn(() => new Date())
     .notNull(),

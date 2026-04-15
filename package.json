@@ -23,7 +23,8 @@
     "types": "wrangler types ./worker-configuration.d.ts --include-runtime false",
     "db:generate": "node ./scripts/generate-migrations.mjs",
     "db:migrate": "yes | wrangler d1 migrations apply node-map --local --config ./wrangler.jsonc",
-    "db:migrate:remote": "wrangler d1 migrations apply node-map --remote --config ./wrangler.jsonc"
+    "db:migrate:remote": "wrangler d1 migrations apply node-map --remote --config ./wrangler.jsonc",
+    "db:promote-user": "node ./scripts/promote-user.mjs"
   },
   "dependencies": {
     "@formisch/react": "^0.4.4",

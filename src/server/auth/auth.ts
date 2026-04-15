@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import * as schema from "#src/shared/db/schema";
 import { getDb } from "../db/client";
 import type { AppBindings } from "../env";
+import { roles } from "#src/shared";
 
 export function createAuth(env: AppBindings) {
   if (!env.BETTER_AUTH_SECRET) {
@@ -44,6 +45,16 @@ export function createAuth(env: AppBindings) {
       github: {
         clientId: env.GITHUB_CLIENT_ID,
         clientSecret: env.GITHUB_CLIENT_SECRET,
+      },
+    },
+    user: {
+      additionalFields: {
+        role: {
+          type: [...roles],
+          required: true,
+          input: false,
+          defaultValue: "civilian",
+        },
       },
     },
   });
