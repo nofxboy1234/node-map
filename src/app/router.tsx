@@ -10,6 +10,8 @@ export function makeRouter(queryClient: QueryClient) {
       queryClient,
     } satisfies RouterContext,
     defaultPreload: "intent",
+    defaultPreloadStaleTime: 0,
+    scrollRestoration: true,
   });
 }
 

@@ -22,5 +22,4 @@ export const sessionQuery = queryOptions({
 
     return result.data;
   },
-  staleTime: 30_000,
 });

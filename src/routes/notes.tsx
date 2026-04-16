@@ -15,7 +15,10 @@ export const Route = createFileRoute("/notes")({
       });
     }
 
-    await context.queryClient.ensureQueryData(notesQuery);
+    await context.queryClient.ensureQueryData({
+      ...notesQuery,
+      revalidateIfStale: true,
+    });
   },
   component: NotesPage,
 });

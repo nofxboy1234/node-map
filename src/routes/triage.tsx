@@ -18,7 +18,10 @@ export const Route = createFileRoute("/triage")({
       });
     }
 
-    await context.queryClient.ensureQueryData(triageReportsQuery);
+    await context.queryClient.ensureQueryData({
+      ...triageReportsQuery,
+      revalidateIfStale: true,
+    });
   },
   component: RouteComponent,
 });

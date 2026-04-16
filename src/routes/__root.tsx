@@ -4,7 +4,10 @@ import { sessionQuery } from "../queries/session";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({ context }) => ({
-    session: await context.queryClient.ensureQueryData(sessionQuery),
+    session: await context.queryClient.ensureQueryData({
+      ...sessionQuery,
+      revalidateIfStale: true,
+    }),
   }),
   component: Root,
 });

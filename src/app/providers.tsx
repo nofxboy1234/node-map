@@ -4,7 +4,16 @@ import { useState } from "react";
 import { makeRouter } from "./router";
 
 export function AppProviders() {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 30_000,
+          },
+        },
+      }),
+  );
   const [router] = useState(() => makeRouter(queryClient));
 
   return (
