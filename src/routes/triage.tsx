@@ -1,17 +1,20 @@
 import { triageReportsQuery } from "#src/queries/triage-reports.js";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { ensureSession } from "../queries/session";
 
 export const Route = createFileRoute("/triage")({
   loader: async ({ context, location }) => {
-    if (!context.session?.user) {
+    const session = await ensureSession(context.queryClient);
+
+    if (!session?.user) {
       throw redirect({
         to: "/auth",
         search: { redirect: location.href },
       });
     }
 
-    if (context.session.user.role !== "internal_user") {
+    if (session.user.role !== "internal_user") {
       throw redirect({
         to: "/",
         search: { redirect: location.href },

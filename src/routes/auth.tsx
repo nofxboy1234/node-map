@@ -3,7 +3,7 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import * as v from "valibot";
 import { authClient } from "../lib/auth-client";
-import { sessionQuery } from "../queries/session";
+import { ensureSession, sessionQuery } from "../queries/session";
 
 const authSearchSchema = v.object({
   redirect: v.fallback(v.pipe(v.string(), v.regex(/^\/(?!\/).*/)), "/"),
@@ -11,8 +11,9 @@ const authSearchSchema = v.object({
 
 export const Route = createFileRoute("/auth")({
   validateSearch: authSearchSchema,
-  beforeLoad: ({ context, search }) => {
-    if (context.session?.user) {
+  beforeLoad: async ({ context, search }) => {
+    const session = await ensureSession(context.queryClient);
+    if (session?.user) {
       throw redirect({ href: search.redirect });
     }
   },

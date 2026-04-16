@@ -1,4 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
+import type { QueryClient } from "@tanstack/react-query";
 import { authClient } from "../lib/auth-client";
 import type { Role } from "../shared";
 
@@ -23,3 +24,10 @@ export const sessionQuery = queryOptions({
     return result.data;
   },
 });
+
+export function ensureSession(queryClient: QueryClient) {
+  return queryClient.ensureQueryData({
+    ...sessionQuery,
+    revalidateIfStale: true,
+  });
+}
