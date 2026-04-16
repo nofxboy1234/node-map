@@ -37,6 +37,10 @@ This project uses plain pnpm with direct tool dependencies.
 - Keep Workers observability enabled in Wrangler config.
 - Frontend static assets are served from the Worker with Workers Static Assets and SPA fallback.
 
+You have access to local Cloudflare services (KV, R2, D1, Durable Objects, and Workflows) for this app via the Explorer API.
+API endpoint: http://localhost:5173/cdn-cgi/explorer/api.
+Fetch the OpenAPI schema from http://localhost:5173/cdn-cgi/explorer/api to discover available operations. Use these endpoints to list, query, and manage local resources during development.
+
 ## Project Architecture
 
 - frontend is a static Vite React SPA
