@@ -9,7 +9,7 @@ export function listNotes(env: AppBindings) {
   return getDb(env).select().from(notes).orderBy(desc(notes.createdAt));
 }
 
-export async function createNote(env: AppBindings, title: string): Promise<NoteRow> {
+export async function createNote(env: AppBindings, title: string) {
   const rows = await getDb(env).insert(notes).values({ title }).returning();
 
   return rows[0]!;

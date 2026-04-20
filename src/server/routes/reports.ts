@@ -9,7 +9,7 @@ import {
 } from "../services/reports-service";
 import { requireInternalUser } from "../auth/require-internal-user";
 
-function assertNever(value: never): never {
+function assertNever(value: never) {
   throw new Error(`Unexpected triage outcome: ${String(value)}`);
 }
 

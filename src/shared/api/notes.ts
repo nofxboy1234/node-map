@@ -6,10 +6,8 @@ import { createApiClient } from "./client";
 type NotesClient = ReturnType<typeof createApiClient>;
 type CreateNoteRoute = NotesClient["api"]["notes"]["$post"];
 type CreateNoteInput = InferRequestType<CreateNoteRoute>["json"];
-type GetNotesResponse = v.InferOutput<typeof getNotesResponseSchema>;
-type CreateNoteResponse = v.InferOutput<typeof createNoteResponseSchema>;
 
-export async function getNotes(baseUrl: string): Promise<GetNotesResponse> {
+export async function getNotes(baseUrl: string) {
   const client = createApiClient(baseUrl);
   const res = await client.api.notes.$get();
 
@@ -20,10 +18,7 @@ export async function getNotes(baseUrl: string): Promise<GetNotesResponse> {
   return v.parse(getNotesResponseSchema, await res.json());
 }
 
-export async function createNote(
-  baseUrl: string,
-  input: CreateNoteInput,
-): Promise<CreateNoteResponse> {
+export async function createNote(baseUrl: string, input: CreateNoteInput) {
   const client = createApiClient(baseUrl);
   const res = await client.api.notes.$post({ json: input });
 

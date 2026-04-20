@@ -4,7 +4,7 @@ import type { AppBindings } from "../env";
 
 export type IncidentRow = typeof incidents.$inferSelect;
 
-export async function createIncident(env: AppBindings, title: string): Promise<IncidentRow> {
+export async function createIncident(env: AppBindings, title: string) {
   const rows = await getDb(env).insert(incidents).values({ title }).returning();
   return rows[0]!;
 }

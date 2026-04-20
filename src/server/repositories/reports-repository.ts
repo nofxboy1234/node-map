@@ -23,10 +23,7 @@ export function listSubmittedReports(env: AppBindings) {
     .orderBy(desc(reports.createdAt));
 }
 
-export async function findReportById(
-  env: AppBindings,
-  reportId: string,
-): Promise<ReportRow | undefined> {
+export async function findReportById(env: AppBindings, reportId: string) {
   const rows = await getDb(env).select().from(reports).where(eq(reports.id, reportId)).limit(1);
   return rows[0];
 }
@@ -35,7 +32,7 @@ export async function updateReportStatus(
   env: AppBindings,
   reportId: string,
   status: TriagedReportStatus,
-): Promise<ReportRow> {
+) {
   const rows = await getDb(env)
     .update(reports)
     .set({ status })
@@ -44,7 +41,7 @@ export async function updateReportStatus(
   return rows[0]!;
 }
 
-export async function createReport(env: AppBindings, input: CreateReportRow): Promise<ReportRow> {
+export async function createReport(env: AppBindings, input: CreateReportRow) {
   const rows = await getDb(env).insert(reports).values(input).returning();
   return rows[0]!;
 }
