@@ -10,18 +10,15 @@ import { createApiClient } from "./client";
 type ReportsClient = ReturnType<typeof createApiClient>;
 
 type CreateReportRoute = ReportsClient["api"]["reports"]["$post"];
-type CreateReportInput = InferRequestType<CreateReportRoute>["json"];
-type CreateReportResponse = v.InferOutput<typeof createReportResponseSchema>;
+type CreateReportRequest = InferRequestType<CreateReportRoute>;
+type CreateReportInput = CreateReportRequest["json"];
 
 type TriageReportRoute = ReportsClient["api"]["reports"][":reportId"]["triage"]["$post"];
 type TriageReportRequest = InferRequestType<TriageReportRoute>;
-type TriageParams = TriageReportRequest["param"];
 type TriageReportInput = TriageReportRequest["json"];
+type TriageParams = TriageReportRequest["param"];
 
-export async function createReport(
-  baseUrl: string,
-  input: CreateReportInput,
-): Promise<CreateReportResponse> {
+export async function createReport(baseUrl: string, input: CreateReportInput) {
   const client = createApiClient(baseUrl);
   const res = await client.api.reports.$post({ json: input });
 
