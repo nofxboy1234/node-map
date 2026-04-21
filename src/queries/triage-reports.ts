@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { getTriageQueue } from "../shared/api";
-import { apiBaseUrl } from "#src/lib/api-base-url.js";
+import { apiBaseUrl } from "#src/lib/api-base-url";
 
 export const triageReportsQuery = queryOptions({
   queryKey: ["reports", "triage"],

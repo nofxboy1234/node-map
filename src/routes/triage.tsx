@@ -1,11 +1,11 @@
-import { triageReportsQuery } from "#src/queries/triage-reports.js";
+import { triageReportsQuery } from "#src/queries/triage-reports";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { ensureSession } from "../queries/session";
 import { triageReportActionInputSchema } from "#src/shared";
 import * as v from "valibot";
 import { triageReport } from "../shared/api";
-import { apiBaseUrl } from "#src/lib/api-base-url.js";
+import { apiBaseUrl } from "#src/lib/api-base-url";
 import { useState } from "react";
 
 type TriageReportActionInput = v.InferOutput<typeof triageReportActionInputSchema>;
