@@ -6,6 +6,8 @@ describe("worker", () => {
     const response = await app.request("https://example.com/health");
 
     expect(response.status).toBe(200);
-    await expect(response.json()).resolves.toEqual({ ok: true });
+
+    const body = await response.json();
+    expect(body).toEqual({ ok: true });
   });
 });

@@ -16,7 +16,7 @@ import {
 } from "../repositories/reports-repository";
 
 type CreateReportInput = v.InferOutput<typeof createReportInputSchema>;
-type TriageReportActionInput = v.InferOutput<typeof triageReportActionInputSchema>;
+export type TriageReportActionInput = v.InferOutput<typeof triageReportActionInputSchema>;
 type TriageReportResult = v.InferOutput<typeof triageReportResponseSchema>;
 
 export type TriageReportOutcome =

@@ -1,14 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type {
+  TriageReportActionInput,
+  TriageReportOutcome,
+} from "#src/server/services/reports-service";
 
 const getSessionMock = vi.fn<() => Promise<{ user: { id: string; role?: string } } | null>>();
 const applyTriageActionMock =
   vi.fn<
-    (
-      env: unknown,
-      reportId: string,
-      input: { action: string; incidentTitle?: string },
-    ) => Promise<unknown>
+    (env: unknown, reportId: string, input: TriageReportActionInput) => Promise<TriageReportOutcome>
   >();
+
+function assertNever(value: never): never {
+  throw new Error(`Unexpected triage action: ${JSON.stringify(value)}`);
+}
 
 vi.mock("#src/server/auth/auth", () => ({
   createAuth: () => ({
@@ -43,11 +47,7 @@ describe("reports triage API", () => {
     });
 
     applyTriageActionMock.mockImplementation(
-      async (
-        _env: unknown,
-        reportId: string,
-        input: { action: string; incidentTitle?: string },
-      ) => {
+      async (_env: unknown, reportId: string, input: TriageReportActionInput) => {
         if (reportId === "already-triaged") {
           return {
             kind: "already_triaged",
@@ -109,7 +109,7 @@ describe("reports triage API", () => {
           };
         }
 
-        throw new Error(`Unexpected action: ${input.action}`);
+        return assertNever(input);
       },
     );
   });
@@ -146,7 +146,9 @@ describe("reports triage API", () => {
     });
 
     expect(response.status).toBe(200);
-    await expect(response.json()).resolves.toMatchObject({
+
+    const body = await response.json();
+    expect(body).toMatchObject({
       report: {
         id: "report-1",
         status: "duplicate",
@@ -168,7 +170,9 @@ describe("reports triage API", () => {
     });
 
     expect(response.status).toBe(200);
-    await expect(response.json()).resolves.toMatchObject({
+
+    const body = await response.json();
+    expect(body).toMatchObject({
       report: {
         id: "report-2",
         status: "rejected",
@@ -191,7 +195,9 @@ describe("reports triage API", () => {
     });
 
     expect(response.status).toBe(200);
-    await expect(response.json()).resolves.toMatchObject({
+
+    const body = await response.json();
+    expect(body).toMatchObject({
       report: {
         id: "report-3",
         status: "escalated",

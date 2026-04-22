@@ -1,35 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type {
+  TransitionIncidentStateInput,
+  TransitionIncidentStateOutcome,
+} from "#src/server/services/incidents-service";
 
 const getSessionMock = vi.fn<() => Promise<{ user: { id: string; role?: string } } | null>>();
-
-type TransitionIncidentStateInput = {
-  nextStatus: "triaging" | "confirmed" | "in_operation" | "resolved";
-};
-
-type TransitionIncidentStateOutcome =
-  | {
-      kind: "success";
-      value: {
-        incident: {
-          id: string;
-          title: string;
-          status: "submitted" | "triaging" | "confirmed" | "in_operation" | "resolved";
-          createdAt: string;
-        };
-      };
-    }
-  | {
-      kind: "not_found";
-    }
-  | {
-      kind: "invalid_transition";
-      currentStatus: "submitted" | "triaging" | "confirmed" | "in_operation" | "resolved";
-      nextStatus: "triaging" | "confirmed" | "in_operation" | "resolved";
-    }
-  | {
-      kind: "rule_violation";
-      reason: "missing_linked_reports_for_confirmation";
-    };
 
 const transitionIncidentStateMock =
   vi.fn<
@@ -132,7 +107,9 @@ describe("incident state transition API", () => {
     });
 
     expect(response.status).toBe(404);
-    await expect(response.json()).resolves.toEqual({ message: "Incident not found" });
+
+    const body = await response.json();
+    expect(body).toEqual({ message: "Incident not found" });
   });
 
   it("returns 409 for invalid transitions", async () => {
@@ -154,7 +131,9 @@ describe("incident state transition API", () => {
     });
 
     expect(response.status).toBe(409);
-    await expect(response.json()).resolves.toEqual({
+
+    const body = await response.json();
+    expect(body).toEqual({
       message: "Cannot transition incident from submitted to resolved",
     });
   });
@@ -177,7 +156,9 @@ describe("incident state transition API", () => {
     });
 
     expect(response.status).toBe(409);
-    await expect(response.json()).resolves.toEqual({
+
+    const body = await response.json();
+    expect(body).toEqual({
       message: "Cannot confirm incident without at least one linked report",
     });
   });
@@ -195,7 +176,9 @@ describe("incident state transition API", () => {
     });
 
     expect(response.status).toBe(200);
-    await expect(response.json()).resolves.toMatchObject({
+
+    const body = await response.json();
+    expect(body).toMatchObject({
       incident: {
         id: "incident-1",
         status: "triaging",

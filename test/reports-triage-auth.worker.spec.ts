@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { getSubmittedReportsForTriage } from "#src/server/services/reports-service";
 
 const getSessionMock = vi.fn<() => Promise<{ user: { id: string; role?: string } } | null>>();
-const getSubmittedReportsForTriageMock = vi.fn<() => Promise<unknown[]>>();
+const getSubmittedReportsForTriageMock =
+  vi.fn<() => ReturnType<typeof getSubmittedReportsForTriage>>();
 
 vi.mock("#src/server/auth/auth", () => ({
   createAuth: () => ({

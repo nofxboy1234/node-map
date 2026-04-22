@@ -8,7 +8,7 @@
 - [x] Group 4: Internal triage endpoints + UI
 - [x] Group 5: Incident creation + report linking on escalation
 - [x] Group 6: Incident lifecycle state machine (backend-first)
-- [ ] Group 7: Sighting events + storage
+- [x] Group 7: Sighting events + storage
 - [ ] Group 8: Incident timeline system (audit log)
 - [ ] Group 9: PixiJS tactical map (basic)
 - [ ] Group 10: Map overlays (derived devil position + movement trail)

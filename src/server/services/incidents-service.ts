@@ -12,7 +12,7 @@ import {
   updateIncidentStatus,
 } from "../repositories/incidents-repository";
 
-type TransitionIncidentStateInput = v.InferOutput<typeof transitionIncidentStateInputSchema>;
+export type TransitionIncidentStateInput = v.InferOutput<typeof transitionIncidentStateInputSchema>;
 type TransitionIncidentStateResponse = v.InferOutput<typeof transitionIncidentStateResponseSchema>;
 
 type NextIncidentStatus = TransitionIncidentStateInput["nextStatus"];
