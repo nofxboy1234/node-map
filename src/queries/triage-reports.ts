@@ -5,5 +5,4 @@ import { apiBaseUrl } from "#src/lib/api-base-url";
 export const triageReportsQuery = queryOptions({
   queryKey: ["reports", "triage"],
   queryFn: () => getTriageQueue(apiBaseUrl),
-  staleTime: 0,
 });

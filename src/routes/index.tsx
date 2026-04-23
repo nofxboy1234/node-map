@@ -9,6 +9,7 @@ import { authClient } from "../lib/auth-client";
 import { apiBaseUrl } from "../lib/api-base-url";
 import { sessionQuery } from "../queries/session";
 import styles from "./index.module.css";
+import { triageReportsQuery } from "#src/queries/triage-reports";
 
 type CreateReportInput = v.InferOutput<typeof createReportInputSchema>;
 
@@ -37,9 +38,10 @@ function HomePage() {
     onMutate: () => {
       setLastReportId(null);
     },
-    onSuccess: ({ report }) => {
+    onSuccess: async ({ report }) => {
       setLastReportId(report.id);
       reset(form);
+      await queryClient.invalidateQueries({ queryKey: triageReportsQuery.queryKey });
     },
   });
 
