@@ -11,11 +11,14 @@ function assertNever(value: never): never {
 
 export const sightingsRoutes = new Hono<{ Bindings: AppBindings }>()
   .post("/:incidentId/sightings", sValidator("json", createSightingInputSchema), async (c) => {
-    await requireInternalUser(c);
+    const actorId = await requireInternalUser(c);
 
     const { incidentId } = c.req.param();
     const sightingInput = c.req.valid("json");
-    const outcome = await submitSighting(c.env, incidentId, sightingInput);
+    const outcome = await submitSighting(c.env, incidentId, {
+      ...sightingInput,
+      actorId,
+    });
 
     switch (outcome.kind) {
       case "success":

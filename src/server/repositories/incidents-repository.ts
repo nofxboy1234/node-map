@@ -18,7 +18,10 @@ export async function createIncidentReportLink(
   await getDb(env).insert(incidentReports).values({ incidentId, reportId });
 }
 
-export async function findIncidentById(env: AppBindings, incidentId: string) {
+export async function findIncidentById(
+  env: AppBindings,
+  incidentId: string,
+): Promise<IncidentRow | undefined> {
   const rows = await getDb(env)
     .select()
     .from(incidents)

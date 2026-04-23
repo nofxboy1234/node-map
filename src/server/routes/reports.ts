@@ -26,11 +26,14 @@ export const reportsRoutes = new Hono<{ Bindings: AppBindings }>()
     return c.json({ reports }, 200);
   })
   .post("/:reportId/triage", sValidator("json", triageReportActionInputSchema), async (c) => {
-    await requireInternalUser(c);
+    const actorId = await requireInternalUser(c);
 
     const { reportId } = c.req.param();
     const triageInput = c.req.valid("json");
-    const outcome = await applyTriageAction(c.env, reportId, triageInput);
+    const outcome = await applyTriageAction(c.env, reportId, {
+      ...triageInput,
+      actorId,
+    });
 
     switch (outcome.kind) {
       case "success":

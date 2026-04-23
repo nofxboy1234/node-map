@@ -11,8 +11,12 @@ import {
   listIncidentSightings,
   type SightingRow,
 } from "../repositories/sightings-repository";
+import { recordIncidentEvent } from "./incident-events-service";
 
 export type CreateSightingInput = v.InferOutput<typeof createSightingInputSchema>;
+export type SubmitSightingCommandInput = CreateSightingInput & {
+  actorId: string;
+};
 type CreateSightingResult = v.InferOutput<typeof createSightingResponseSchema>;
 
 type GetIncidentSightingsResult = v.InferOutput<typeof getSightingsResponseSchema>;
@@ -52,7 +56,7 @@ function toSightingDto(sighting: SightingRow) {
 export async function submitSighting(
   env: AppBindings,
   incidentId: string,
-  input: CreateSightingInput,
+  input: SubmitSightingCommandInput,
 ): Promise<SubmitSightingOutcome> {
   const incident = await findIncidentById(env, incidentId);
 
@@ -68,6 +72,20 @@ export async function submitSighting(
     positionX: input.position.x,
     positionY: input.position.y,
     source: input.source,
+  });
+  await recordIncidentEvent(env, {
+    incidentId: incident.id,
+    type: "sighting_added",
+    actorId: input.actorId,
+    payload: {
+      sightingId: sighting.id,
+      position: {
+        x: sighting.positionX,
+        y: sighting.positionY,
+      },
+      source: sighting.source,
+      confidence: sighting.confidence,
+    },
   });
 
   return {

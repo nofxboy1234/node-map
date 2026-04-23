@@ -35,11 +35,14 @@ export const incidentsRoutes = new Hono<{ Bindings: AppBindings }>().post(
   "/:incidentId/state",
   sValidator("json", transitionIncidentStateInputSchema),
   async (c) => {
-    await requireInternalUser(c);
+    const actorId = await requireInternalUser(c);
 
     const { incidentId } = c.req.param();
     const transitionInput = c.req.valid("json");
-    const outcome = await transitionIncidentState(c.env, incidentId, transitionInput);
+    const outcome = await transitionIncidentState(c.env, incidentId, {
+      ...transitionInput,
+      actorId,
+    });
 
     switch (outcome.kind) {
       case "success":

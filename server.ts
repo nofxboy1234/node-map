@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { createAuth } from "#src/server/auth/auth";
 import type { AppBindings } from "#src/server/env";
+import { incidentEventsRoutes } from "#src/server/routes/incident-events";
 import { incidentsRoutes } from "#src/server/routes/incidents";
 import { notesRoutes } from "#src/server/routes/notes";
 import { reportsRoutes } from "#src/server/routes/reports";
@@ -12,6 +13,7 @@ app.on(["GET", "POST"], "/api/auth/*", (c) => createAuth(c.env).handler(c.req.ra
 
 app.get("/health", (c) => c.json({ ok: true }));
 const routes = app
+  .route("/api/incidents", incidentEventsRoutes)
   .route("/api/incidents", incidentsRoutes)
   .route("/api/incidents", sightingsRoutes)
   .route("/api/notes", notesRoutes)

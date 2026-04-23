@@ -1,26 +1,20 @@
-import type {
-  CreateSightingInput,
-  getIncidentSightings,
-  SubmitSightingOutcome,
-} from "#src/server/services/sighting-service";
+import type { AppBindings } from "#src/server/env";
+import type { getIncidentSightings, submitSighting } from "#src/server/services/sighting-service";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const getSessionMock = vi.fn<() => Promise<{ user: { id: string; role?: string } } | null>>();
 
 vi.mock("#src/server/auth/auth", () => ({
-  createAuth: () => ({
+  createAuth: (_env: AppBindings) => ({
     api: {
       getSession: getSessionMock,
     },
   }),
 }));
 
-const submitSightingMock =
-  vi.fn<
-    (env: unknown, incidentId: string, input: CreateSightingInput) => Promise<SubmitSightingOutcome>
-  >();
+const submitSightingMock = vi.fn<typeof submitSighting>();
 
-const getIncidentSightingsMock = vi.fn<() => ReturnType<typeof getIncidentSightings>>();
+const getIncidentSightingsMock = vi.fn<typeof getIncidentSightings>();
 
 vi.mock("#src/server/services/sighting-service", () => ({
   submitSighting: submitSightingMock,
@@ -169,6 +163,15 @@ describe("sightings API", () => {
     });
 
     expect(response.status).toBe(201);
+    expect(submitSightingMock).toHaveBeenCalledWith(undefined, "incident-1", {
+      position: {
+        x: 10,
+        y: 20,
+      },
+      source: "civilian",
+      confidence: 0.4,
+      actorId: "internal-1",
+    });
 
     const body = await response.json();
     expect(body).toMatchObject({

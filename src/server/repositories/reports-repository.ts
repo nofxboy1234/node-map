@@ -23,7 +23,10 @@ export function listSubmittedReports(env: AppBindings) {
     .orderBy(desc(reports.createdAt));
 }
 
-export async function findReportById(env: AppBindings, reportId: string) {
+export async function findReportById(
+  env: AppBindings,
+  reportId: string,
+): Promise<ReportRow | undefined> {
   const rows = await getDb(env).select().from(reports).where(eq(reports.id, reportId)).limit(1);
   return rows[0];
 }

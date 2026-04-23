@@ -14,9 +14,13 @@ import {
   type ReportRow,
   updateReportStatus,
 } from "../repositories/reports-repository";
+import { recordIncidentEvent } from "./incident-events-service";
 
 type CreateReportInput = v.InferOutput<typeof createReportInputSchema>;
 export type TriageReportActionInput = v.InferOutput<typeof triageReportActionInputSchema>;
+export type TriageReportCommandInput = TriageReportActionInput & {
+  actorId: string;
+};
 type TriageReportResult = v.InferOutput<typeof triageReportResponseSchema>;
 
 export type TriageReportOutcome =
@@ -69,7 +73,7 @@ export async function getSubmittedReportsForTriage(env: AppBindings) {
 export async function applyTriageAction(
   env: AppBindings,
   reportId: string,
-  input: TriageReportActionInput,
+  input: TriageReportCommandInput,
 ): Promise<TriageReportOutcome> {
   const report = await findReportById(env, reportId);
 
@@ -99,6 +103,24 @@ export async function applyTriageAction(
       const incident = await createIncident(env, input.incidentTitle);
       await createIncidentReportLink(env, incident.id, report.id);
       const updated = await updateReportStatus(env, report.id, "escalated");
+      await recordIncidentEvent(env, {
+        incidentId: incident.id,
+        type: "incident_created",
+        actorId: input.actorId,
+        payload: {
+          incidentId: incident.id,
+          reportId: report.id,
+          title: incident.title,
+        },
+      });
+      await recordIncidentEvent(env, {
+        incidentId: incident.id,
+        type: "report_escalated",
+        actorId: input.actorId,
+        payload: {
+          reportId: report.id,
+        },
+      });
       return toTriageSuccess(updated, incident.id);
     }
 

@@ -1,21 +1,16 @@
+import type { AppBindings } from "#src/server/env";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type {
-  TriageReportActionInput,
-  TriageReportOutcome,
-} from "#src/server/services/reports-service";
+import type { applyTriageAction } from "#src/server/services/reports-service";
 
 const getSessionMock = vi.fn<() => Promise<{ user: { id: string; role?: string } } | null>>();
-const applyTriageActionMock =
-  vi.fn<
-    (env: unknown, reportId: string, input: TriageReportActionInput) => Promise<TriageReportOutcome>
-  >();
+const applyTriageActionMock = vi.fn<typeof applyTriageAction>();
 
 function assertNever(value: never): never {
   throw new Error(`Unexpected triage action: ${JSON.stringify(value)}`);
 }
 
 vi.mock("#src/server/auth/auth", () => ({
-  createAuth: () => ({
+  createAuth: (_env: AppBindings) => ({
     api: {
       getSession: getSessionMock,
     },
@@ -46,72 +41,70 @@ describe("reports triage API", () => {
       },
     });
 
-    applyTriageActionMock.mockImplementation(
-      async (_env: unknown, reportId: string, input: TriageReportActionInput) => {
-        if (reportId === "already-triaged") {
-          return {
-            kind: "already_triaged",
-            status: "duplicate",
-          };
-        }
+    applyTriageActionMock.mockImplementation(async (_env, reportId, input) => {
+      if (reportId === "already-triaged") {
+        return {
+          kind: "already_triaged",
+          status: "duplicate",
+        };
+      }
 
-        if (input.action === "mark_duplicate") {
-          return {
-            kind: "success",
-            value: {
-              report: {
-                id: reportId,
-                description: "Test report",
-                location: { x: 0, y: 0 },
-                devilType: null,
-                urgency: "medium",
-                status: "duplicate",
-                createdAt: new Date().toISOString(),
-              },
-              incidentId: null,
+      if (input.action === "mark_duplicate") {
+        return {
+          kind: "success",
+          value: {
+            report: {
+              id: reportId,
+              description: "Test report",
+              location: { x: 0, y: 0 },
+              devilType: null,
+              urgency: "medium",
+              status: "duplicate",
+              createdAt: new Date().toISOString(),
             },
-          };
-        }
+            incidentId: null,
+          },
+        };
+      }
 
-        if (input.action === "reject") {
-          return {
-            kind: "success",
-            value: {
-              report: {
-                id: reportId,
-                description: "Test report",
-                location: { x: 0, y: 0 },
-                devilType: null,
-                urgency: "medium",
-                status: "rejected",
-                createdAt: new Date().toISOString(),
-              },
-              incidentId: null,
+      if (input.action === "reject") {
+        return {
+          kind: "success",
+          value: {
+            report: {
+              id: reportId,
+              description: "Test report",
+              location: { x: 0, y: 0 },
+              devilType: null,
+              urgency: "medium",
+              status: "rejected",
+              createdAt: new Date().toISOString(),
             },
-          };
-        }
+            incidentId: null,
+          },
+        };
+      }
 
-        if (input.action === "escalate") {
-          return {
-            kind: "success",
-            value: {
-              report: {
-                id: reportId,
-                description: "Test report",
-                location: { x: 0, y: 0 },
-                devilType: null,
-                urgency: "medium",
-                status: "escalated",
-                createdAt: new Date().toISOString(),
-              },
-              incidentId: "incident-1",
+      if (input.action === "escalate") {
+        return {
+          kind: "success",
+          value: {
+            report: {
+              id: reportId,
+              description: "Test report",
+              location: { x: 0, y: 0 },
+              devilType: null,
+              urgency: "medium",
+              status: "escalated",
+              createdAt: new Date().toISOString(),
             },
-          };
-        }
+            incidentId: "incident-1",
+          },
+        };
+      }
 
-        return assertNever(input);
-      },
-    );
+      return assertNever(input);
+    });
   });
 
   it("requires auth for triage queue", async () => {
@@ -146,6 +139,10 @@ describe("reports triage API", () => {
     });
 
     expect(response.status).toBe(200);
+    expect(applyTriageActionMock).toHaveBeenCalledWith(undefined, "report-1", {
+      action: "mark_duplicate",
+      actorId: "internal-1",
+    });
 
     const body = await response.json();
     expect(body).toMatchObject({

@@ -1,22 +1,13 @@
+import type { AppBindings } from "#src/server/env";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type {
-  TransitionIncidentStateInput,
-  TransitionIncidentStateOutcome,
-} from "#src/server/services/incidents-service";
+import type { transitionIncidentState } from "#src/server/services/incidents-service";
 
 const getSessionMock = vi.fn<() => Promise<{ user: { id: string; role?: string } } | null>>();
 
-const transitionIncidentStateMock =
-  vi.fn<
-    (
-      env: unknown,
-      incidentId: string,
-      input: TransitionIncidentStateInput,
-    ) => Promise<TransitionIncidentStateOutcome>
-  >();
+const transitionIncidentStateMock = vi.fn<typeof transitionIncidentState>();
 
 vi.mock("#src/server/auth/auth", () => ({
-  createAuth: () => ({
+  createAuth: (_env: AppBindings) => ({
     api: {
       getSession: getSessionMock,
     },
@@ -176,6 +167,10 @@ describe("incident state transition API", () => {
     });
 
     expect(response.status).toBe(200);
+    expect(transitionIncidentStateMock).toHaveBeenCalledWith(undefined, "incident-1", {
+      nextStatus: "triaging",
+      actorId: "internal-1",
+    });
 
     const body = await response.json();
     expect(body).toMatchObject({

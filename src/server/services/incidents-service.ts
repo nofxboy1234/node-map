@@ -11,8 +11,12 @@ import {
   type IncidentRow,
   updateIncidentStatus,
 } from "../repositories/incidents-repository";
+import { recordIncidentEvent } from "./incident-events-service";
 
 export type TransitionIncidentStateInput = v.InferOutput<typeof transitionIncidentStateInputSchema>;
+export type TransitionIncidentStateCommandInput = TransitionIncidentStateInput & {
+  actorId: string;
+};
 type TransitionIncidentStateResponse = v.InferOutput<typeof transitionIncidentStateResponseSchema>;
 
 type NextIncidentStatus = TransitionIncidentStateInput["nextStatus"];
@@ -59,7 +63,7 @@ function canTransition(currentStatus: IncidentStatus, nextStatus: NextIncidentSt
 export async function transitionIncidentState(
   env: AppBindings,
   incidentId: string,
-  input: TransitionIncidentStateInput,
+  input: TransitionIncidentStateCommandInput,
 ): Promise<TransitionIncidentStateOutcome> {
   const incident = await findIncidentById(env, incidentId);
 
@@ -88,6 +92,16 @@ export async function transitionIncidentState(
   }
 
   const updated = await updateIncidentStatus(env, incident.id, nextStatus);
+  await recordIncidentEvent(env, {
+    incidentId: incident.id,
+    type: "state_changed",
+    actorId: input.actorId,
+    payload: {
+      from: incident.status,
+      to: nextStatus,
+    },
+  });
+
   return {
     kind: "success",
     value: { incident: toIncidentDto(updated) },
