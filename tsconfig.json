@@ -14,5 +14,5 @@
       "#src/*": ["./src/*"]
     }
   },
-  "include": ["server.ts", "worker-configuration.d.ts", "src", "drizzle.config.ts"]
+  "include": ["server.ts", "worker-configuration.d.ts", "src", "drizzle.config.ts", "pixi-test.tsx"]
 }

@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "oxc", "unicorn", "react", "vitest"],
+  "ignorePatterns": ["migrations/**", "src/routeTree.gen.ts"],
+  "options": {
+    "typeAware": true,
+    "typeCheck": true
+  },
+  "rules": {
+    "react/exhaustive-deps": "error"
+  }
+}
