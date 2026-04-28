@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TriageRouteImport } from './routes/triage'
 import { Route as NotesRouteImport } from './routes/notes'
+import { Route as MapRouteImport } from './routes/map'
 import { Route as GoodbyeRouteImport } from './routes/goodbye'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,6 +24,11 @@ const TriageRoute = TriageRouteImport.update({
 const NotesRoute = NotesRouteImport.update({
   id: '/notes',
   path: '/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GoodbyeRoute = GoodbyeRouteImport.update({
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/goodbye': typeof GoodbyeRoute
+  '/map': typeof MapRoute
   '/notes': typeof NotesRoute
   '/triage': typeof TriageRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/goodbye': typeof GoodbyeRoute
+  '/map': typeof MapRoute
   '/notes': typeof NotesRoute
   '/triage': typeof TriageRoute
 }
@@ -60,21 +68,23 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/goodbye': typeof GoodbyeRoute
+  '/map': typeof MapRoute
   '/notes': typeof NotesRoute
   '/triage': typeof TriageRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/goodbye' | '/notes' | '/triage'
+  fullPaths: '/' | '/auth' | '/goodbye' | '/map' | '/notes' | '/triage'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/goodbye' | '/notes' | '/triage'
-  id: '__root__' | '/' | '/auth' | '/goodbye' | '/notes' | '/triage'
+  to: '/' | '/auth' | '/goodbye' | '/map' | '/notes' | '/triage'
+  id: '__root__' | '/' | '/auth' | '/goodbye' | '/map' | '/notes' | '/triage'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   GoodbyeRoute: typeof GoodbyeRoute
+  MapRoute: typeof MapRoute
   NotesRoute: typeof NotesRoute
   TriageRoute: typeof TriageRoute
 }
@@ -93,6 +103,13 @@ declare module '@tanstack/react-router' {
       path: '/notes'
       fullPath: '/notes'
       preLoaderRoute: typeof NotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/goodbye': {
@@ -123,6 +140,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   GoodbyeRoute: GoodbyeRoute,
+  MapRoute: MapRoute,
   NotesRoute: NotesRoute,
   TriageRoute: TriageRoute,
 }

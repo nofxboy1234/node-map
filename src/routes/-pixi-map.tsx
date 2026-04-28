@@ -1,7 +1,6 @@
 import { Application, extend } from "@pixi/react";
 import { Assets, Container, Graphics, Sprite, Texture } from "pixi.js";
-import { StrictMode, useEffect, useState } from "react";
-import { createRoot } from "react-dom/client";
+import { useEffect, useState } from "react";
 
 extend({
   Container,
@@ -38,21 +37,10 @@ function BunnySprite() {
   );
 }
 
-function App() {
+export function PixiMap() {
   return (
     <Application>
       <BunnySprite />
     </Application>
   );
 }
-
-const container = document.querySelector("#root");
-if (!container) {
-  throw new Error("Missing #root");
-}
-
-createRoot(container).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
