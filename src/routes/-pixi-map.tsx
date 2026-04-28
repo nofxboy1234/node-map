@@ -1,12 +1,10 @@
-import { Application, extend } from "@pixi/react";
+import { Application, useExtend } from "@pixi/react";
 import { Assets, Sprite, Texture } from "pixi.js";
 import { useEffect, useState } from "react";
 
-extend({
-  Sprite,
-});
-
 function BunnySprite() {
+  useExtend({ Sprite });
+
   const [texture, setTexture] = useState(Texture.EMPTY);
   const [isHover, setIsHover] = useState(false);
   const [isActive, setIsActive] = useState(false);
@@ -37,8 +35,17 @@ function BunnySprite() {
 
 export function PixiMap() {
   return (
-    <Application>
-      <BunnySprite />
-    </Application>
+    <div style={{ position: "relative" }}>
+      <Application width={800} height={600}>
+        <BunnySprite />
+      </Application>
+
+      <button
+        style={{ position: "absolute", top: 16, left: 16, cursor: "pointer" }}
+        onClick={() => console.log("click!")}
+      >
+        Click
+      </button>
+    </div>
   );
 }
