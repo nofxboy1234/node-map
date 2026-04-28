@@ -3,8 +3,6 @@ import { Assets, Container, Graphics, Sprite, Texture } from "pixi.js";
 import { useEffect, useState } from "react";
 
 extend({
-  Container,
-  Graphics,
   Sprite,
 });
 
