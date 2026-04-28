@@ -1,5 +1,5 @@
 import { Application, extend } from "@pixi/react";
-import { Assets, Container, Graphics, Sprite, Texture } from "pixi.js";
+import { Assets, Sprite, Texture } from "pixi.js";
 import { useEffect, useState } from "react";
 
 extend({
