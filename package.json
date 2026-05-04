@@ -47,7 +47,7 @@
     "@tanstack/router-plugin": "^1.167.32",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@typescript/native-preview": "7.0.0-dev.20260503.1",
+    "@typescript/native-preview": "7.0.0-dev.20260504.1",
     "@vitejs/plugin-react": "^6.0.1",
     "drizzle-kit": "rc",
     "knip": "^6.11.0",
