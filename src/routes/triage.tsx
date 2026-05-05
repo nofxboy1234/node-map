@@ -7,6 +7,7 @@ import * as v from "valibot";
 import { triageReport } from "../shared/api";
 import { apiBaseUrl } from "#src/lib/api-base-url";
 import { useState } from "react";
+import { mapIncidentsQuery } from "#src/queries/map-incidents.js";
 
 type TriageReportActionInput = v.InferOutput<typeof triageReportActionInputSchema>;
 
@@ -62,7 +63,10 @@ function RouteComponent() {
       actionInput: TriageReportActionInput;
     }) => triageReport(apiBaseUrl, reportId, actionInput),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: triageReportsQuery.queryKey });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: triageReportsQuery.queryKey }),
+        queryClient.invalidateQueries({ queryKey: mapIncidentsQuery.queryKey }),
+      ]);
     },
   });
 
