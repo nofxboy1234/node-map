@@ -1,7 +1,7 @@
 import { ensureSession } from "#src/queries/session";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PixiMap } from "./-pixi-map";
-import { mapIncidentsQuery } from "#src/queries/map-incidents.js";
+import { mapIncidentsQuery } from "#src/queries/map-incidents";
 import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/map")({

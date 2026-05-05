@@ -60,7 +60,7 @@ function IncidentMarker({
     (graphics: PixiGraphics) => {
       graphics.clear();
       graphics.circle(0, 0, isSelected ? 10 : 7);
-      graphics.fill({ color: 0xffd47 });
+      graphics.fill({ color: 0xffd447 });
       graphics.setStrokeStyle({ color: 0xffffff, width: isSelected ? 3 : 1 });
       graphics.stroke();
     },
@@ -89,7 +89,7 @@ export function PixiMap({ incidents }: TacticalMapProps) {
   return (
     <section style={{ display: "grid", gap: 16 }}>
       <div style={{ position: "relative", width: mapSize.width }}>
-        <Application background="#111111" height={mapSize.height} width={mapSize.height}>
+        <Application background="#111111" height={mapSize.height} width={mapSize.width}>
           <pixiContainer>
             <BaseMap />
             {incidents.map((incident) => (
@@ -106,7 +106,7 @@ export function PixiMap({ incidents }: TacticalMapProps) {
 
       {selectedIncident ? (
         <aside>
-          <h2>{selectedIncident.id}</h2>
+          <h2>{selectedIncident.title}</h2>
           <dl>
             <dt>Status</dt>
             <dd>{selectedIncident.status}</dd>
@@ -117,7 +117,7 @@ export function PixiMap({ incidents }: TacticalMapProps) {
           </dl>
         </aside>
       ) : (
-        <p>No incidents availble.</p>
+        <p>No incidents available.</p>
       )}
     </section>
   );

@@ -100,7 +100,11 @@ export async function applyTriageAction(
     }
 
     case "escalate": {
-      const incident = await createIncident(env, input.incidentTitle);
+      const incident = await createIncident(env, {
+        title: input.incidentTitle,
+        locationX: report.locationX,
+        locationY: report.locationY,
+      });
       await createIncidentReportLink(env, incident.id, report.id);
       const updated = await updateReportStatus(env, report.id, "escalated");
       await recordIncidentEvent(env, {

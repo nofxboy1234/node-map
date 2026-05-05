@@ -16,7 +16,7 @@ export async function getMapIncidents(baseUrl: string) {
   const res = await client.api.incidents.$get();
 
   if (!res.ok) {
-    throw new Error();
+    throw new Error("Failed to get map incidents");
   }
 
   return v.parse(mapIncidentResponseSchema, await res.json());

@@ -7,7 +7,7 @@ import * as v from "valibot";
 import { triageReport } from "../shared/api";
 import { apiBaseUrl } from "#src/lib/api-base-url";
 import { useState } from "react";
-import { mapIncidentsQuery } from "#src/queries/map-incidents.js";
+import { mapIncidentsQuery } from "#src/queries/map-incidents";
 
 type TriageReportActionInput = v.InferOutput<typeof triageReportActionInputSchema>;
 

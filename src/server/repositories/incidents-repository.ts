@@ -1,12 +1,18 @@
 import { count, desc, eq } from "drizzle-orm";
-import { incidentReports, incidents, reports } from "#src/shared/db/schema";
+import { incidentReports, incidents } from "#src/shared/db/schema";
 import { getDb } from "../db/client";
 import type { AppBindings } from "../env";
 
 export type IncidentRow = typeof incidents.$inferSelect;
 
-export async function createIncident(env: AppBindings, title: string) {
-  const rows = await getDb(env).insert(incidents).values({ title }).returning();
+type CreateIncidentRow = {
+  title: string;
+  locationX: number;
+  locationY: number;
+};
+
+export async function createIncident(env: AppBindings, input: CreateIncidentRow) {
+  const rows = await getDb(env).insert(incidents).values(input).returning();
   return rows[0]!;
 }
 
@@ -58,11 +64,9 @@ export async function listMapIncidents(env: AppBindings) {
       title: incidents.title,
       status: incidents.status,
       createdAt: incidents.createdAt,
-      locationX: reports.locationX,
-      locationY: reports.locationY,
+      locationX: incidents.locationX,
+      locationY: incidents.locationY,
     })
     .from(incidents)
-    .innerJoin(incidentReports, eq(incidentReports.incidentId, incidents.id))
-    .innerJoin(reports, eq(reports.id, incidentReports.reportId))
     .orderBy(desc(incidents.createdAt));
 }

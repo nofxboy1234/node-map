@@ -54,6 +54,8 @@ export const incidents = sqliteTable(
       .$defaultFn(() => crypto.randomUUID())
       .primaryKey(),
     title: text("title").notNull(),
+    locationX: real("location_x").notNull(),
+    locationY: real("location_y").notNull(),
     status: text("status", { enum: incidentStatuses })
       .$type<IncidentStatus>()
       .default("submitted")

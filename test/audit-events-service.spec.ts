@@ -72,6 +72,8 @@ function createIncidentRow(overrides: Partial<IncidentRow> = {}): IncidentRow {
   return {
     id: "incident-1",
     title: "Incident Alpha",
+    locationX: 10,
+    locationY: 20,
     status: "submitted",
     createdAt: new Date("2026-04-22T10:00:00.000Z"),
     ...overrides,
