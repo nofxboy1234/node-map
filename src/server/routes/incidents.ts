@@ -7,6 +7,7 @@ import {
   transitionIncidentState,
   type TransitionIncidentStateOutcome,
 } from "../services/incidents-service";
+import { listMapIncidents } from "../repositories/incidents-repository";
 
 function assertNever(value: never): never {
   throw new Error(`Unexpected incident transition outcome: ${String(value)}`);
@@ -31,10 +32,29 @@ function toTransitionMessage(outcome: FailedTransitionIncidentStateOutcome) {
   }
 }
 
-export const incidentsRoutes = new Hono<{ Bindings: AppBindings }>().post(
-  "/:incidentId/state",
-  sValidator("json", transitionIncidentStateInputSchema),
-  async (c) => {
+export const incidentsRoutes = new Hono<{ Bindings: AppBindings }>()
+  .get("/", async (c) => {
+    await requireInternalUser(c);
+
+    const incidents = await listMapIncidents(c.env);
+
+    return c.json(
+      {
+        incidents: incidents.map((incident) => ({
+          id: incident.id,
+          title: incident.title,
+          status: incident.status,
+          location: {
+            x: incident.locationX,
+            y: incident.locationY,
+          },
+          createdAt: incident.createdAt.toISOString(),
+        })),
+      },
+      200,
+    );
+  })
+  .post("/:incidentId/state", sValidator("json", transitionIncidentStateInputSchema), async (c) => {
     const actorId = await requireInternalUser(c);
 
     const { incidentId } = c.req.param();
@@ -58,5 +78,4 @@ export const incidentsRoutes = new Hono<{ Bindings: AppBindings }>().post(
       default:
         return assertNever(outcome);
     }
-  },
-);
+  });

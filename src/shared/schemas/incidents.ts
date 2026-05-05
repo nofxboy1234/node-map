@@ -22,3 +22,18 @@ export const incidentDtoSchema = v.object({
 export const transitionIncidentStateResponseSchema = v.object({
   incident: incidentDtoSchema,
 });
+
+export const mapIncidentDtoSchema = v.object({
+  id: v.string(),
+  title: v.string(),
+  status: v.picklist(incidentStatuses),
+  location: v.object({
+    x: v.number(),
+    y: v.number(),
+  }),
+  createdAt: v.string(),
+});
+
+export const mapIncidentResponseSchema = v.object({
+  incidents: v.array(mapIncidentDtoSchema),
+});

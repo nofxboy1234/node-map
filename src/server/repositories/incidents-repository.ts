@@ -1,5 +1,5 @@
-import { count, eq } from "drizzle-orm";
-import { incidentReports, incidents } from "#src/shared/db/schema";
+import { count, desc, eq } from "drizzle-orm";
+import { incidentReports, incidents, reports } from "#src/shared/db/schema";
 import { getDb } from "../db/client";
 import type { AppBindings } from "../env";
 
@@ -49,4 +49,20 @@ export async function updateIncidentStatus(
     .where(eq(incidents.id, incidentId))
     .returning();
   return rows[0]!;
+}
+
+export async function listMapIncidents(env: AppBindings) {
+  return getDb(env)
+    .select({
+      id: incidents.id,
+      title: incidents.title,
+      status: incidents.status,
+      createdAt: incidents.createdAt,
+      locationX: reports.locationX,
+      locationY: reports.locationY,
+    })
+    .from(incidents)
+    .innerJoin(incidentReports, eq(incidentReports.incidentId, incidents.id))
+    .innerJoin(reports, eq(reports.id, incidentReports.reportId))
+    .orderBy(desc(incidents.createdAt));
 }

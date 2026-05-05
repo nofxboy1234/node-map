@@ -1,6 +1,8 @@
 import { ensureSession } from "#src/queries/session";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PixiMap } from "./-pixi-map";
+import { mapIncidentsQuery } from "#src/queries/map-incidents.js";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/map")({
   loader: async ({ context, location }) => {
@@ -12,21 +14,41 @@ export const Route = createFileRoute("/map")({
         search: { redirect: location.href },
       });
     }
+
     if (session.user.role !== "internal_user") {
       throw redirect({
         to: "/",
         search: { redirect: location.href },
       });
     }
+
+    await context.queryClient.ensureQueryData({
+      ...mapIncidentsQuery,
+      revalidateIfStale: true,
+    });
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { data, isLoading, error } = useQuery(mapIncidentsQuery);
+
+  if (isLoading) {
+    return <main>Loading...</main>;
+  }
+
+  if (error) {
+    return <main>{error.message}</main>;
+  }
+
+  if (!data) {
+    throw new Error("Missing map incidents data");
+  }
+
   return (
-    <div>
-      <div>Hello "/map"!</div>
-      <PixiMap />
-    </div>
+    <main>
+      <h1>Tactical Map</h1>
+      <PixiMap incidents={data.incidents} />
+    </main>
   );
 }

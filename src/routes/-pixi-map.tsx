@@ -1,51 +1,124 @@
 import { Application, useExtend } from "@pixi/react";
-import { Assets, Sprite, Texture } from "pixi.js";
-import { useEffect, useState } from "react";
+import { Container, Graphics, type Graphics as PixiGraphics } from "pixi.js";
+import { useCallback, useState } from "react";
+import type { InferOutput } from "valibot";
+import type { mapIncidentDtoSchema } from "#src/shared";
 
-function BunnySprite() {
-  useExtend({ Sprite });
+type MapIncident = InferOutput<typeof mapIncidentDtoSchema>;
 
-  const [texture, setTexture] = useState(Texture.EMPTY);
-  const [isHover, setIsHover] = useState(false);
-  const [isActive, setIsActive] = useState(false);
+type TacticalMapProps = {
+  incidents: MapIncident[];
+};
 
-  useEffect(() => {
-    Assets.load<Texture>("https://pixijs.com/assets/bunny.png").then(
-      setTexture,
-      (error: unknown) => {
-        throw error;
-      },
-    );
+const mapSize = {
+  width: 800,
+  height: 520,
+};
+
+function toMapPoint(value: number, max: number) {
+  return Math.min(Math.max(value, 0), max);
+}
+
+function BaseMap() {
+  useExtend({ Graphics });
+
+  const draw = useCallback((graphics: PixiGraphics) => {
+    graphics.clear();
+    graphics.rect(0, 0, mapSize.width, mapSize.height);
+    graphics.fill({ color: 0x111111 });
+
+    graphics.setStrokeStyle({ color: 0x333333, width: 1 });
+
+    for (let x = 0; x <= mapSize.width; x += 80) {
+      graphics.moveTo(x, 0);
+      graphics.lineTo(x, mapSize.height);
+    }
+
+    for (let y = 0; y <= mapSize.height; y += 80) {
+      graphics.moveTo(0, y);
+      graphics.lineTo(mapSize.width, y);
+    }
+
+    graphics.stroke();
   }, []);
 
+  return <pixiGraphics draw={draw} />;
+}
+
+function IncidentMarker({
+  incident,
+  isSelected,
+  onSelect,
+}: {
+  incident: MapIncident;
+  isSelected: boolean;
+  onSelect: () => void;
+}) {
+  useExtend({ Graphics });
+
+  const draw = useCallback(
+    (graphics: PixiGraphics) => {
+      graphics.clear();
+      graphics.circle(0, 0, isSelected ? 10 : 7);
+      graphics.fill({ color: 0xffd47 });
+      graphics.setStrokeStyle({ color: 0xffffff, width: isSelected ? 3 : 1 });
+      graphics.stroke();
+    },
+    [isSelected],
+  );
+
   return (
-    <pixiSprite
-      anchor={0.5}
-      eventMode={"static"}
-      onClick={() => setIsActive((current) => !current)}
-      onPointerOut={() => setIsHover(false)}
-      onPointerOver={() => setIsHover(true)}
-      scale={isActive ? 1.5 : isHover ? 1.25 : 1}
-      texture={texture}
-      x={100}
-      y={100}
+    <pixiGraphics
+      cursor="pointer"
+      draw={draw}
+      eventMode="static"
+      onClick={onSelect}
+      x={toMapPoint(incident.location.x, mapSize.width)}
+      y={toMapPoint(incident.location.y, mapSize.height)}
     />
   );
 }
 
-export function PixiMap() {
-  return (
-    <div style={{ position: "relative" }}>
-      <Application width={800} height={600}>
-        <BunnySprite />
-      </Application>
+export function PixiMap({ incidents }: TacticalMapProps) {
+  useExtend({ Container });
 
-      <button
-        style={{ position: "absolute", top: 16, left: 16, cursor: "pointer" }}
-        onClick={() => console.log("click!")}
-      >
-        Click
-      </button>
-    </div>
+  const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
+  const selectedIncident =
+    incidents.find((incident) => incident.id === selectedIncidentId) ?? incidents[0] ?? null;
+
+  return (
+    <section style={{ display: "grid", gap: 16 }}>
+      <div style={{ position: "relative", width: mapSize.width }}>
+        <Application background="#111111" height={mapSize.height} width={mapSize.height}>
+          <pixiContainer>
+            <BaseMap />
+            {incidents.map((incident) => (
+              <IncidentMarker
+                key={incident.id}
+                incident={incident}
+                isSelected={incident.id === selectedIncident?.id}
+                onSelect={() => setSelectedIncidentId(incident.id)}
+              />
+            ))}
+          </pixiContainer>
+        </Application>
+      </div>
+
+      {selectedIncident ? (
+        <aside>
+          <h2>{selectedIncident.id}</h2>
+          <dl>
+            <dt>Status</dt>
+            <dd>{selectedIncident.status}</dd>
+            <dt>Position</dt>
+            <dd>
+              {selectedIncident.location.x}, {selectedIncident.location.y}
+            </dd>
+          </dl>
+        </aside>
+      ) : (
+        <p>No incidents availble.</p>
+      )}
+    </section>
   );
 }
