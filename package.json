@@ -24,6 +24,7 @@
     "db:generate": "node ./scripts/generate-migrations.mjs",
     "db:migrate": "yes | wrangler d1 migrations apply node-map --local",
     "db:migrate:remote": "wrangler d1 migrations apply node-map --remote",
+    "db:studio": "drizzle-kit studio --config=drizzle.studio.config.ts",
     "db:promote-user": "node ./scripts/promote-user.mjs"
   },
   "dependencies": {
