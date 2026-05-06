@@ -24,6 +24,7 @@
     "db:generate": "node ./scripts/generate-migrations.mjs",
     "db:migrate": "yes | wrangler d1 migrations apply node-map --local",
     "db:migrate:remote": "wrangler d1 migrations apply node-map --remote",
+    "db:erd": "mkdir -p .liam && tbls out -t json -o .liam/schema.json sqlite:///$PWD/.wrangler/state/v3/d1/miniflare-D1DatabaseObject/6cd7c6191fa9c059e90939845c92fad32fcecb0f4fa80c0017e27f8b5843a40a.sqlite && liam erd build --format tbls --input .liam/schema.json --output-dir .liam/dist && bun ./scripts/serve-liam-erd.mjs",
     "db:studio": "drizzle-kit studio --config=drizzle.studio.config.ts",
     "db:promote-user": "node ./scripts/promote-user.mjs"
   },
@@ -45,6 +46,7 @@
     "@cloudflare/vite-plugin": "^1.36.0",
     "@cloudflare/vitest-pool-workers": "^0.16.0",
     "@cloudflare/workers-types": "^4.20260506.1",
+    "@liam-hq/cli": "^0.7.24",
     "@tanstack/router-plugin": "^1.167.34",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
