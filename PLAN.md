@@ -11,7 +11,7 @@
 - [x] Group 7: Sighting events + storage
 - [x] Group 8: Incident timeline system (audit log)
 - [x] Group 9: PixiJS tactical map (basic)
-- [ ] Group 10: Map overlays (derived devil position + movement trail)
+- [x] Group 10: Map overlays (derived devil position + movement trail)
 
 ## Current Architecture + Constraints
 

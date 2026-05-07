@@ -2,12 +2,14 @@ import { Application, useExtend } from "@pixi/react";
 import { Container, Graphics, type Graphics as PixiGraphics } from "pixi.js";
 import { useCallback, useState } from "react";
 import type { InferOutput } from "valibot";
-import type { mapIncidentDtoSchema } from "#src/shared";
+import { getSightingsResponseSchema, type mapIncidentDtoSchema } from "#src/shared";
 
 type MapIncident = InferOutput<typeof mapIncidentDtoSchema>;
+type Sighting = InferOutput<typeof getSightingsResponseSchema>["sightings"][number];
 
 type TacticalMapProps = {
   incidents: MapIncident[];
+  sightingsByIncidentId: Record<string, Sighting[]>;
 };
 
 const mapSize = {
@@ -17,6 +19,23 @@ const mapSize = {
 
 function toMapPoint(value: number, max: number) {
   return Math.min(Math.max(value, 0), max);
+}
+
+function getCurrentSighting(sightings: Sighting[]) {
+  return sightings.at(-1) ?? null;
+}
+
+function getIncidentSightings(
+  sightingsByIncidentId: Record<string, Sighting[]>,
+  incidentId: string,
+) {
+  const sightings = sightingsByIncidentId[incidentId];
+
+  if (!sightings) {
+    throw new Error(`Missing sightings for incident ${incidentId}`);
+  }
+
+  return sightings;
 }
 
 function BaseMap() {
@@ -43,6 +62,71 @@ function BaseMap() {
   }, []);
 
   return <pixiGraphics draw={draw} />;
+}
+
+function MovementTrail({ sightings }: { sightings: Sighting[] }) {
+  useExtend({ Graphics });
+
+  const draw = useCallback(
+    (graphics: PixiGraphics) => {
+      graphics.clear();
+
+      if (sightings.length === 0) {
+        return;
+      }
+
+      graphics.setStrokeStyle({ color: 0xff3b30, width: 3, alpha: 0.55 });
+
+      sightings.forEach((sighting, index) => {
+        const x = toMapPoint(sighting.position.x, mapSize.width);
+        const y = toMapPoint(sighting.position.y, mapSize.height);
+
+        if (index === 0) {
+          graphics.moveTo(x, y);
+          return;
+        }
+
+        graphics.lineTo(x, y);
+      });
+
+      graphics.stroke();
+
+      sightings.forEach((sighting, index) => {
+        const age = sightings.length - index;
+        const alpha = Math.max(0.25, 1 - age * 0.18);
+
+        graphics.circle(
+          toMapPoint(sighting.position.x, mapSize.width),
+          toMapPoint(sighting.position.y, mapSize.height),
+          4,
+        );
+        graphics.fill({ color: 0xff3b30, alpha });
+      });
+    },
+    [sightings],
+  );
+
+  return <pixiGraphics draw={draw} />;
+}
+
+function DevilMarker({ sighting }: { sighting: Sighting }) {
+  useExtend({ Graphics });
+
+  const draw = useCallback((graphics: PixiGraphics) => {
+    graphics.clear();
+    graphics.circle(0, 0, 9);
+    graphics.fill({ color: 0xff3b30 });
+    graphics.setStrokeStyle({ color: 0xffffff, width: 2 });
+    graphics.stroke();
+  }, []);
+
+  return (
+    <pixiGraphics
+      draw={draw}
+      x={toMapPoint(sighting.position.x, mapSize.width)}
+      y={toMapPoint(sighting.position.y, mapSize.height)}
+    />
+  );
 }
 
 function IncidentMarker({
@@ -79,12 +163,16 @@ function IncidentMarker({
   );
 }
 
-export function PixiMap({ incidents }: TacticalMapProps) {
+export function PixiMap({ incidents, sightingsByIncidentId }: TacticalMapProps) {
   useExtend({ Container });
 
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
   const selectedIncident =
     incidents.find((incident) => incident.id === selectedIncidentId) ?? incidents[0] ?? null;
+  const selectedSightings = selectedIncident
+    ? getIncidentSightings(sightingsByIncidentId, selectedIncident.id)
+    : [];
+  const selectedCurrentSighting = getCurrentSighting(selectedSightings);
 
   return (
     <section style={{ display: "grid", gap: 16 }}>
@@ -92,14 +180,22 @@ export function PixiMap({ incidents }: TacticalMapProps) {
         <Application background="#111111" height={mapSize.height} width={mapSize.width}>
           <pixiContainer>
             <BaseMap />
-            {incidents.map((incident) => (
-              <IncidentMarker
-                key={incident.id}
-                incident={incident}
-                isSelected={incident.id === selectedIncident?.id}
-                onSelect={() => setSelectedIncidentId(incident.id)}
-              />
-            ))}
+            {incidents.map((incident) => {
+              const sightings = getIncidentSightings(sightingsByIncidentId, incident.id);
+              const currentSighting = getCurrentSighting(sightings);
+
+              return (
+                <pixiContainer key={incident.id}>
+                  <MovementTrail sightings={sightings} />
+                  {currentSighting ? <DevilMarker sighting={currentSighting} /> : null}
+                  <IncidentMarker
+                    incident={incident}
+                    isSelected={incident.id === selectedIncident?.id}
+                    onSelect={() => setSelectedIncidentId(incident.id)}
+                  />
+                </pixiContainer>
+              );
+            })}
           </pixiContainer>
         </Application>
       </div>
@@ -110,9 +206,15 @@ export function PixiMap({ incidents }: TacticalMapProps) {
           <dl>
             <dt>Status</dt>
             <dd>{selectedIncident.status}</dd>
-            <dt>Position</dt>
+            <dt>Incident position</dt>
             <dd>
               {selectedIncident.location.x}, {selectedIncident.location.y}
+            </dd>
+            <dt>Current devil position</dt>
+            <dd>
+              {selectedCurrentSighting
+                ? `${selectedCurrentSighting.position.x}, ${selectedCurrentSighting.position.y}`
+                : "No sightings"}
             </dd>
           </dl>
         </aside>
