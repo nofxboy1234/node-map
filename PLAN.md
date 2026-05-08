@@ -36,13 +36,13 @@
 
 Not Fully Implemented
 
-  - Incident timeline UI is missing. The API exists at GET /api/incidents/:incidentId/events, but there is no incident detail page or
-    chronological timeline UI, which spec.md explicitly asks for.
-  - report_submitted events are not recorded. submitReport creates the report but does not call recordIncidentEvent in src/server/services/
-    reports-service.ts:137. The current incident_events table also requires incident_id, so standalone report submission cannot be represented
-    cleanly there.
-  - Duplicate and reject triage actions do not create audit events. They update status only in src/server/services/reports-service.ts:91.
-  - There is no frontend UI to transition incident states. The backend endpoint exists, but no route/component calls transitionIncidentState.
-  - There is no frontend UI to add sightings. The backend endpoint exists, but the map only reads sightings.
-  - There is no incident detail page. The map has a small selected incident panel, but not the incident management/detail surface implied by
-    lifecycle + timeline + sightings.
+- Incident timeline UI is missing. The API exists at GET /api/incidents/:incidentId/events, but there is no incident detail page or
+  chronological timeline UI, which spec.md explicitly asks for.
+- report_submitted events are not recorded. submitReport creates the report but does not call recordIncidentEvent in src/server/services/
+  reports-service.ts:137. The current incident_events table also requires incident_id, so standalone report submission cannot be represented
+  cleanly there.
+- Duplicate and reject triage actions do not create audit events. They update status only in src/server/services/reports-service.ts:91.
+- There is no frontend UI to transition incident states. The backend endpoint exists, but no route/component calls transitionIncidentState.
+- There is no frontend UI to add sightings. The backend endpoint exists, but the map only reads sightings.
+- There is no incident detail page. The map has a small selected incident panel, but not the incident management/detail surface implied by
+  lifecycle + timeline + sightings.
